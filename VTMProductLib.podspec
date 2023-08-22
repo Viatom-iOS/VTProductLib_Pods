@@ -16,8 +16,8 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "VTMProductLib"
-  spec.version      = "1.0.0"
-  spec.summary      = "Support communication between Lepu's ECG series products and iOS devices."
+  spec.version      = "1.1.0"
+  spec.summary      = "Support Lepu's ECG series products."
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
