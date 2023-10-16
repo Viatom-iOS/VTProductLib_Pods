@@ -16,8 +16,8 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "VTMProductLib"
-  spec.version      = "1.1.0"
-  spec.summary      = "Support Lepu's ECG series products."
+  spec.version      = "1.2.0"
+  spec.summary      = "Support Lepu's products."
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
@@ -25,10 +25,10 @@ Pod::Spec.new do |spec|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   spec.description  = <<-DESC
-                  Support communication between Lepu's ECG series products and iOS devices.
+                  Support communication between Lepu's products and iOS devices.
                    DESC
 
-  spec.homepage     = "https://git.lepudev.com/lepusdk/vtproductlib"
+  spec.homepage     = "https://github.com/Viatom-iOS/VTProductLib_Pods"
   # spec.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
 
@@ -79,7 +79,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "https://git.lepudev.com/lepusdk/vtproductlib.git", :tag => spec.version }
+  spec.source       = { :git => "https://github.com/Viatom-iOS/VTProductLib_Pods", :tag => spec.version }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
