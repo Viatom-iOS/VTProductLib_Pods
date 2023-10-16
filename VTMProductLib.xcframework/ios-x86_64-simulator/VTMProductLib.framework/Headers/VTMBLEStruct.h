@@ -825,6 +825,258 @@ typedef struct {
     uint8_t reserved[1];    ///< 预留
 } CG_BOXABLE VTMER3PointData;
 
+
+
+// MARK: O2Ring II struct
+typedef struct {
+    u_char remind_switch;   // 提醒开关  bit0-bit3:血氧提醒开关  bit4-bit7:心率提醒开关   bit0/bit4震动  bit1/bit5声音  其他预留
+    u_char spo2_thr;        // 血氧阈值80-95% 步进%1 默认 88%
+    u_char hr_thr_low;      // 心率提醒低阈值 30-70 步进5 默认 50
+    u_char hr_thr_high;     // 心率提醒高阈值 70-200 步进5 默认 120
+    u_char motor;           // 震动强(震动强度不随开关的改变而改变) KidsO2(5/10/17/22/35) Oxylink(5/10/17/22/35)  O2Ring(20/40/60/80/100)
+    u_char buzzer;          // 声音强度 (O2M：最低：20，低:40，中：60，高：80，最高：100)
+    u_char display_mode;    // 显示模式 0:Standard模式 2:Always On模式
+    u_char brightness;      // 屏幕亮度    0：低 1：中 2：高
+    u_char interval;        // 存储间隔 单位S
+    u_char timezone;        // 时区 默认80
+    u_char reserved[30];    // 预留
+} CG_BOXABLE VTMWOxiInfo;
+
+/**
+ typedef struct{
+     unsigned char val;  //血氧提醒开关 bit0:震动 bit1:声音
+     char reserved[3];
+ } SpO2SwitchSetting
+ typedef struct
+ {
+   unsigned char val;  //血氧阈值
+   char reserved[3];
+ }SpO2Thr Setting;
+ typedef struct
+ {
+     unsigned char val;  //心率提醒开关 bit0:震动 bit1:声音
+     char reserved[3];
+ } HRSwitchSetting
+ typedef struct
+ {
+     unsigned char val;  //心率提醒低阈值
+     char reserved[3];
+ } HRThrLowSetting
+ typedef struct
+ {
+     unsigned char val;  //心率提醒高阈值
+     char reserved[3];
+ } HRThrHighSetting
+ typedef struct
+ {
+     unsigned char val;  //震动强(震动强度不随开关的改变而改变)
+ KidsO2(5/10/17/22/35) Oxylink(5/10/17/22/35)  O2Ring(20/40/60/80/100)
+     char reserved[3];
+ } MotorSetting
+ typedef struct
+ {
+     unsigned char val;  //声音强度 (checkO2Plus：最低：20，低:40，中：60，高：80，最高：100)
+     char reserved[3];
+ } BuzzerSetting
+ typedef struct
+ {
+     unsigned char val;  //显示模式 0:Standard模式 1:Always Off模式2:Always On模式
+     char reserved[3];
+ } DisplayModeSetting
+ typedef struct
+ {
+     unsigned char val;  //屏幕亮度
+     char reserved[3];
+ } BrightnessSetting
+ typedef struct
+ {
+     unsigned char val;  //存储间隔
+     char reserved[3];
+ } IntervalSetting
+ */
+typedef struct {
+    u_char val;             // 参考文档
+    char reserved[3];
+} CG_BOXABLE VTMOxiParam;
+
+
+
+typedef struct {
+    u_char type;            // 见 `VTMWOxiSetParams`
+    char reserved[3];
+    VTMOxiParam param;        // 每个设置项占4个字节，与type相对应
+} CG_BOXABLE VTMOxiParamsOption;
+
+
+typedef struct {
+    u_int record_time;      // 已记录时长    单位:second    暂无使用
+    u_char run_status;      // 运行状态 0:准备阶段 1:测量准备阶段 2:测量中 3:测量结束
+    u_char sensor_state;    // 传感器状态 0:正常状态 1:未放手指 2:SENSOR_STA_PROBE_OUT 3: 传感器或探头故障
+    u_char spo2;
+    u_char pi;              // PI值*10 e.g.  15 : PI = 1.5
+    u_short pr;
+    u_char flag;            // 标志参数 bit0:脉搏音标志
+    u_char motion;
+    u_char battery_state;   // 电池状态 e.g.   0:正常使用 1:充电中 2:充满 3:低电量
+    u_char battery_percent; // 电池状态 e.g.    电池电量百分比
+    u_char reserved[6];
+} CG_BOXABLE VTMWOxiRunParams;
+
+typedef struct {
+    u_int index;            //波形数据第一个点相对于起始点的编号 暂无使用
+    u_short sampling_num;   //波形数据采样点
+    u_char *waveform_data;  //波形数据
+} CG_BOXABLE VTMWOxiRealWave;
+
+typedef struct {
+    VTMWOxiRunParams run_para;
+    VTMWOxiRealWave waveform;
+} CG_BOXABLE VTMWOxiRealData;
+
+typedef struct {
+    u_char marker;          // 原始数据标识 不能为0 bit0:IR红外 bit1:RED红光 bit2:motion三轴
+    u_char sample_rate;     // 原始数据采样率  0:150HZ 1:200HZ
+} CG_BOXABLE VTMWOxiRawSampleInfo;
+
+typedef struct {
+    int ir;                 // 当marker bit0=1时有效
+    int red;                // 当marker bit1=1时有效
+    u_char motion;          // 当marker bit2=1时有效
+} CG_BOXABLE VTMWOxiRawDataUint;
+
+typedef struct {
+    u_short sampling_num;
+    VTMWOxiRawDataUint *raw_data;
+} CG_BOXABLE VTMWOxiRawData;
+
+
+typedef struct {
+    u_short asleep_time;
+    u_char average_spo2;
+    u_char lowest_spo2;
+    u_char percent3_drops;
+    u_char percent4_drops;
+    u_char t90;
+    u_short _90percent_time;
+    u_char _90percent_drops;
+    u_char o2_score;
+    u_int step_counter;
+    u_char average_pr;
+} CG_BOXABLE VTMWOxiResult;
+
+
+
+// MARK: PF-10
+
+typedef struct {
+    u_char spo2Low;         // 血氧阈值 85%-99% 步进：1%
+    u_char prHigh;          // 脉搏高阈值 100bpm-240bpm；步进：5bpm
+    u_char prLow;           // 脉搏低阈值  30bpm-60bpm；步进：5bpm
+    u_char alramIsOn;       // 阈值提醒开关 0:关 1：开
+    u_char measureMode;     // 测量模式 1：点测 2：连续（预留）
+    u_char beepIsOn;        // 蜂鸣器开关  0:关 1：开
+    u_char language;        // 语言包 0:英文 1：中文
+    u_char bleIsOn;         // 蓝牙开关 0:关 1：开（预留）
+    u_char esmode;          // 测量过程，定时息屏
+    u_char reserved[8];
+} CG_BOXABLE VTMFOxiConfig;
+
+/**
+ typedef struct{
+     unsigned char val;  //血氧提醒阈值 85%-99% 步进：1%
+     char reserved[3];
+ } SpO2LoSetting
+
+ typedef struct{
+     unsigned char val;  //脉搏高阈值
+     char reserved[3];
+ } PrHiSetting
+
+ typedef struct{
+     unsigned char val;  //脉搏低阈值
+     char reserved[3];
+ } PrLoSetting
+
+ typedef struct{
+     unsigned char val;  //闹钟开关
+     char reserved[3];
+ } AlramSetting
+
+ typedef struct{
+     unsigned char val;  //测量模式
+     char reserved[3];
+ } MeasureModeSetting
+
+ typedef struct{
+     unsigned char val;  //蜂鸣器开关
+     char reserved[3];
+ } BeepSetting
+
+ typedef struct{
+     unsigned char val;  //语言包
+     char reserved[3];
+ } LanguageSetting
+
+ typedef struct{
+     unsigned char val;  //蓝牙开关
+     char reserved[3];
+ } BleSwitchSetting
+
+ typedef struct{
+     unsigned char val;  //测量过程，定时息屏
+     char reserved[3];
+ } EsModeSetting
+ */
+
+typedef struct {
+    u_char spo2;            // 氧数据。范围为0%~100%；0代表无效值。
+    u_char pr;              // 脉率数据。范围0~250bpm。0代表无效值。
+    u_char pi;              //（血流灌注指数）数据。范围0%~25.5%；0代表无效值
+    u_char status;          // 血氧状态信息。Bit1:Probe off（探头脱落、手指未插入）
+    u_char res;             // bit6~bit7：电池电量等级，0， 1， 2， 3共4级。
+} CG_BOXABLE VTMFOxiMeasureInfo;
+
+typedef struct {
+    u_char wavedata[5];        // Bit 0~6 波形数据     Bit 7 脉搏搏动标志  0无搏动 1 有搏动
+} CG_BOXABLE VTMFOxiMeasureWave;
+
+typedef struct {
+    u_char mode;            // 当前模式 0x01: spot check 0x02:  continuous 0x03: menu
+    u_char stage;           // mode = 0x01: 0x00 idle  0x01 prepare 0x02 measuring 0x03 oxi result 0x04 PR result; mode = 0x02: 0x00 prepare 0x01 measuring 0x02 finished 0x03 <2mins 0x03 enter menu
+    u_char param1;          // mode = 0x01: 0x02 countdown 30sec 0x03 oxygen val 0x04 PR result code; mode = 0x02: 0x01 record time
+    u_char param2;          // mode = 0x01: 0x04 PR val ;  mode = 0x02: 0x01 record time
+} CG_BOXABLE VTMFOxiWorkStatus;
+
+// MARK: Oximeter file
+
+typedef struct {
+    u_char file_version;
+    u_char file_type;       // Oxi  0x03
+    u_char reserved[6];
+    u_short device_model;
+} CG_BOXABLE VTMOxiFileHead;
+
+typedef struct {
+    u_char spo2;
+    u_char pr;
+    u_char motion;
+    u_char spo2_mark;
+    u_char pr_mark;
+} CG_BOXABLE VTMOxiPoint;
+
+typedef struct {
+    u_int check_sum;
+    u_int magic;                    // 0xDA5A1248
+    u_int timestamp;                // since 1970.01.01 00:00:00
+    u_int records;                  // number of points
+    u_char interval;
+    u_char channel_type;
+    u_char channel_bytes;
+    u_char reserved[13];
+    VTMWOxiResult result;           // Wearable Oximeter
+} CG_BOXABLE VTMOxiFileTail;
+
+
 #pragma pack()
 
 

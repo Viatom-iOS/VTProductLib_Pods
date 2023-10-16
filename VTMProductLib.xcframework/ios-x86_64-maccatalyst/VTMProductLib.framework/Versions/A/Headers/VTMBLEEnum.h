@@ -14,6 +14,8 @@ typedef enum : u_char {
     VTMDeviceTypeBP,            ///< BP2/BP2A/BP2T/BP2W/BP2Pro
     VTMDeviceTypeScale,         ///< S1
     VTMDeviceTypeER3,           ///< ER3
+    VTMDeviceTypeWOxi,       ///< O2Ring S
+    VTMDeviceTypeFOxi,     ///< PF-10BWS
 } VTMDeviceType;
 
 typedef enum : u_char {
@@ -107,6 +109,75 @@ typedef enum : u_char {
     VTMSCALECmdGetRealData = 0x03,
 } VTMSCALECmd;
 
+// MARK: O2Ring S
+
+typedef enum : u_char {
+    VTMWOxiCmdGetConfig = 0x00,
+    VTMWOxiCmdSetConfig = 0x01,
+    VTMWOxiCmdGetRealData = 0x04,
+    VTMWOxiCmdGetRawdata = 0x05,
+    VTMWOxiCmdGetPPGList = 0x06,
+    VTMWOxiCmdGetPPGStart = 0x07,
+    VTMWOxiCmdGetPPGContent = 0x08,
+    VTMWOxiCmdGetPPGEnd = 0x09,
+    VTMWOxiCmdSetUTCTime = 0xC0,
+} VTMWOxiCmd;
+
+
+typedef enum: NSUInteger {
+    VTMWOxiSetParamsAll = 0,               // 预留，后续可能支持批量设置
+    VTMWOxiSetParamsSpO2Sw,                // 血氧提醒开关 bit0:震动 bit1:声音
+    VTMWOxiSetParamsSpO2Thr,               // 血氧阈值
+    VTMWOxiSetParamsHRSw,                  // 心率提醒开关 bit0:震动 bit1:声音
+    VTMWOxiSetParamsHRThrLow,              // 心率提醒低阈值
+    VTMWOxiSetParamsHRThrHigh,             // 心率提醒高阈值
+    VTMWOxiSetParamsMotor,                 // 震动强(震动强度不随开关的改变而改变)
+    VTMWOxiSetParamsBuzzer,                // 声音强度 (checkO2Plus：最低：20，低:40，中：60，高：80，最高：100)
+    VTMWOxiSetParamsDisplayMode,           // 显示模式
+    VTMWOxiSetParamsBrightness,            // 屏幕亮度 0：息屏 1：低亮屏 2：中 3：高
+    VTMWOxiSetParamsInterval,              // 存储间隔
+} VTMWOxiSetParams;
+
+typedef enum: NSUInteger {
+    VTMWOxiChannelSpO2PR = 0,
+    VTMWOxiChannelSpO2PRMotion,
+} VTMWOxiChannel;
+
+
+// MARK: PF-10BWS
+typedef enum: NSUInteger {
+    VTMFOxiESModeOff = 0,
+    VTMFOxiESMode1Min ,
+    VTMFOxiESMode3Min ,
+    VTMFOxiESMode5Min ,
+} VTMFOxiESMode;
+
+typedef enum: u_char {
+    VTMFOxiCmdGetConfig = 0x00,
+    VTMFOxiCmdSetConfig = 0x01,
+    VTMFOxiCmdMakeInfoSend = 0x02,
+    VTMFOxiCmdMakeWaveSend = 0x03,
+    VTMFOxiCmdInfoResp = 0x04,
+    VTMFOxiCmdWaveResp = 0x05,
+    VTMFOxiCmdWorkMode = 0x06,
+} VTMFOxiCmd;
+
+typedef enum: NSUInteger {
+    VTMFOxiSetParamsAll = 0,               // 预留，后续可能支持批量设置
+    VTMFOxiSetParamsSpO2Low,               // 血氧提醒阈值 85%-99% 步进：1%
+    VTMFOxiSetParamsPRHigh,                // 脉搏高阈值 100bpm-240bpm；步进：5bpm
+    VTMFOxiSetParamsPRLow,                 // 脉搏低阈值  30bpm-60bpm；步进：5bpm
+    VTMFOxiSetParamsAlram,                 // 阈值提醒开关 0:关 1：开
+    VTMFOxiSetParamsMeasureMode,           // 测量模式 1：点测 2：连续（预留）
+    VTMFOxiSetParamsBeep,                  // 蜂鸣器开关  0:关 1：开
+    VTMFOxiSetParamsLanguage,              // 语言包 0:英文 1：中文
+    VTMFOxiSetParamsBleSw,                 // 蓝牙开关 0:关 1：开（预留）
+    VTMFOxiSetParamsESMode,                // 测量过程，定时息屏
+} VTMFOxiSetParams;
+
+
+
+// MARK: BP2W
 
 typedef enum : u_char {
     VTMBPTargetStatusBP = 0,
@@ -125,7 +196,6 @@ typedef enum : u_char {
     VTMBPStatusBPMeasureEnd,            // 血压测量结束
     VTMBPStatusECGMeasuring,            // 心电测量中
     VTMBPStatusECGMeasureEnd,           // 心电测量结束
-
     VTMBPStatusBPAVGMeasure = 15,       // BP2WIFI血压测量x3中
     VTMBPStatusBPAVGMeasureWait = 16,   // BP2WIFI血压测量x3等待开始状态
     VTMBPStatusBPAVGMeasureEnd = 17,    // BP2WIFI血压测量x3结束

@@ -94,6 +94,9 @@
 /// @brief The name of the file currently being read
 @property (nonatomic, copy, readonly) NSString * _Nullable curReadFileName;
 
+/// @brief The key of the wearable oximeter
+@property (nonatomic, copy) NSString * _Nullable wearablePPGKey;
+
 /// @brief request device's information.
 - (void)requestDeviceInfo;
 
@@ -122,11 +125,14 @@
 - (void)factoryReset;
 
 
-#pragma mark ----- Now only support BP2 Pro  ------
+#pragma mark ----- Now supported BP2 Pro & O2Ring S  ------
 
 /// @brief sync time and time zone.
 /// @param date  NSDate
 - (void)syncTimeZone:(NSDate * _Nullable)date;
+
+
+#pragma mark ----- Now only support BP2 Pro  ------
 
 /// @brief write file data to peripheral.
 /// @param data  file data
@@ -225,6 +231,44 @@
 
 /// @brief 开启测量
 - (void)startER3MeasurementMode;
+
+@end
+
+@interface VTMURATUtils (WearableOximeter)
+/**
+ * include O2Ring S /
+ */
+- (void)woxi_requestConfig;
+
+- (void)woxi_syncConfigParam:(VTMOxiParamsOption)param;
+
+- (void)woxi_requestWOxiRealData;
+
+- (void)woxi_requestWOxiPPGData:(VTMWOxiRawSampleInfo)info;
+
+- (void)woxi_requestPPGList;
+
+- (void)woxi_prepareReadPPGFile:(NSString * _Nonnull)fileName;
+
+- (void)woxi_readPPGFile:(u_int)offset;
+
+- (void)woxi_endReadPPGFile;
+
+@end
+
+@interface VTMURATUtils (FingerClipOximeter)
+/**
+ * include PF-10BWS /
+ */
+
+- (void)foxi_requestConfig;
+
+- (void)foxi_syncConfigParam:(VTMOxiParamsOption)param;
+
+- (void)foxi_makeInfoSend:(BOOL)send;
+
+- (void)foxi_makeWaveSend:(BOOL)send;
+
 
 @end
 

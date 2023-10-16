@@ -6,15 +6,15 @@
 	<dict>
 		<key>Headers/VTMBLEEnum.h</key>
 		<data>
-		RyjnVf31TIOD1LRI86Zc7YG5JX0=
+		/tSYAKkjoIO6D8RDzLxEC+6gf3k=
 		</data>
 		<key>Headers/VTMBLEParser.h</key>
 		<data>
-		E4FIrnecrMLM2RUaa2tOy8t0jHU=
+		IuFhotvWkgLKpIgGVM7fGXvi/b8=
 		</data>
 		<key>Headers/VTMBLEStruct.h</key>
 		<data>
-		nPBYxXOJ2UBqYVZGzwvMscWf5bY=
+		Buwf1A5daxwtG7CGD3kvWvXJHhI=
 		</data>
 		<key>Headers/VTMCalibrate.h</key>
 		<data>
@@ -30,15 +30,15 @@
 		</data>
 		<key>Headers/VTMURATUtils.h</key>
 		<data>
-		jWGWHUueDIyzwFX9rVVmWzUfr+g=
+		j3CMaK+YgtFfogjQdDpu+L9fchY=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		tdQFfIWeOZX6g8qdcDU+Op8vyDc=
+		hkpYd97KOgyxPYe0av6pMcPe1ok=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		sM7H1tsfQvW6apPWJNMRhzGilFw=
+		laDlx2X5O3dML0mKMqalcW0si68=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -47,33 +47,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			RyjnVf31TIOD1LRI86Zc7YG5JX0=
+			/tSYAKkjoIO6D8RDzLxEC+6gf3k=
 			</data>
 			<key>hash2</key>
 			<data>
-			vE3Ch7a8l+BxWbRvlOVvbJ71jyDu22qVdQKl+y7j81E=
+			5Wej7xRtN3G4s6Gi40EjssfKnQ+vGmxuG40Zewy0hm4=
 			</data>
 		</dict>
 		<key>Headers/VTMBLEParser.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			E4FIrnecrMLM2RUaa2tOy8t0jHU=
+			IuFhotvWkgLKpIgGVM7fGXvi/b8=
 			</data>
 			<key>hash2</key>
 			<data>
-			XcovVCBEGt07UQnEOATnlDRbmBtZDOszgcUZ0Pj8tKU=
+			o78+J2BkOCefhveTvHWQJHhUQx3pOAgMSXILKjVPTn8=
 			</data>
 		</dict>
 		<key>Headers/VTMBLEStruct.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			nPBYxXOJ2UBqYVZGzwvMscWf5bY=
+			Buwf1A5daxwtG7CGD3kvWvXJHhI=
 			</data>
 			<key>hash2</key>
 			<data>
-			9FuJEhEwT3IVDPdnQgfWBAvaMlKcSD8TDZb8u+jQ0Uc=
+			tbwpg3cxmtf11aGvZ6dxFoJG6BKKSD8CRNwJXAQGyOU=
 			</data>
 		</dict>
 		<key>Headers/VTMCalibrate.h</key>
@@ -113,22 +113,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			jWGWHUueDIyzwFX9rVVmWzUfr+g=
+			j3CMaK+YgtFfogjQdDpu+L9fchY=
 			</data>
 			<key>hash2</key>
 			<data>
-			gwi4HnBfu9L6Zgn/XvFwkdtl4dadaguUSR6zwuj/3aY=
+			P2KQJGZ323ytnilYNzgJZJmb4OSUQoAGGQh0CH+sdug=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			sM7H1tsfQvW6apPWJNMRhzGilFw=
+			laDlx2X5O3dML0mKMqalcW0si68=
 			</data>
 			<key>hash2</key>
 			<data>
-			kTKxKB+CVGCKLnJvL1KrkJY1ka7KTOoi7cnVs6Zx30o=
+			m8zT5zRdImi4XvtTp/ACX807CXsI549gnVR99/l9tzY=
 			</data>
 		</dict>
 	</dict>

@@ -159,4 +159,31 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface VTMBLEParser (Oximeter)
+
+// MARK: common
++ (void)oxi_parseFile:(NSData *)data completion:(void(^)(VTMOxiFileHead head, VTMOxiPoint *point, VTMOxiFileTail tail))completion;
+
+// MARK: Wearable Oximeter
+
++ (VTMWOxiInfo)woxi_parseConfig:(NSData *)data;
+
++ (VTMWOxiRealData)woxi_parseRealData:(NSData *)data;
+
+// MARK: Finger Clip Oximeter
+
++ (VTMFOxiConfig)foxi_parseConfig:(NSData *)data;
+
++ (VTMFOxiMeasureInfo)foxi_parseMeasureInfo:(NSData *)data;
+
++ (void)foxi_parseMeasureWave:(NSData *)data completion:(void(^)(int num, VTMFOxiMeasureWave *wave))completion;
+
+
++ (VTMFOxiWorkStatus)foxi_parseWorkStatus:(NSData *)data;
+
+
+
+@end
+
+
 NS_ASSUME_NONNULL_END
