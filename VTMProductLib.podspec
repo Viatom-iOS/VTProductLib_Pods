@@ -52,7 +52,7 @@ Pod::Spec.new do |spec|
   #  profile URL.
   #
 
-  spec.author             = { "yanbo" => "yanbo@lepucloud.com" }
+  spec.author             = { "yanbo" => "yanbo@lepucloud.com", "yangweichao" => "yangweichao@lepucloud.com"}
   # Or just: spec.author    = "yanbo"
   # spec.authors            = { "yanbo" => "yanbo@lepucloud.com" }
   # spec.social_media_url   = "https://twitter.com/yanbo"
@@ -79,7 +79,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "https://github.com/Viatom-iOS/VTProductLib_Pods", :tag => spec.version }
+  spec.source       = { :git => "https://github.com/Viatom-iOS/VTProductLib_Pods.git", :tag => spec.version }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
