@@ -62,7 +62,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark --- VBeat
 
-+ (NSArray *)parseVBeatWaveData:(NSData *)waveData;
++ (NSArray *)parseVBeatWaveData:(NSData *)waveData ;
+
++ (void)parseVBeatData:(NSData *)originalData completion:(void(^)(VTMER1PointData *points, int len))completion;
 
 
 #pragma mark -- config
