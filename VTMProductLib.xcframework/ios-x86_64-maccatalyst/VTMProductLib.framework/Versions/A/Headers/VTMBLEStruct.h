@@ -825,7 +825,11 @@ typedef struct {
     uint8_t reserved[1];    ///< 预留
 } CG_BOXABLE VTMER3PointData;
 
-
+typedef struct {
+    uint8_t ISO;            ///< 导联是欧标 0x01显示欧标 否则 显示美标
+    uint8_t logo;           ///< 开机页面 0x00 中性 0x01：LePu Medical 0x02:Wellue
+    uint8_t reserved[8];    ///< 预留
+} CG_BOXABLE VTMER3ConfigParams;
 
 // MARK: O2Ring II struct
 typedef struct {

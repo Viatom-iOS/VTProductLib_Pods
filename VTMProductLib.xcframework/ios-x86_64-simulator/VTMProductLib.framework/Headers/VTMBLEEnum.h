@@ -80,6 +80,8 @@ typedef enum : u_char {
     VTMER3ECGCmdGetRealData = 0x03,         //  ER3获取实时数据
     VTMER3ECGCmdExitMeasure = 0x07,         // ER3退出测量模式
     VTMER3ECGCmdStartMeasure = 0x08,        // ER3启动测量模式
+    VTMER3ECGCmdGetConfigParams = 0x09,     // ER3获取配置参数
+    VTMER3ECGCmdSetConfigParams = 0x0A,     // ER3设备配置参数
 } VTMECGCmd;
 
 typedef enum : u_char {

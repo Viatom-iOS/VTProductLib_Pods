@@ -232,6 +232,12 @@
 /// @brief 开启测量
 - (void)startER3MeasurementMode;
 
+/// @brief 获取配置参数
+- (void)getER3ConfigParams;
+
+/// @brief 设置配置参数
+- (void)setER3ConfigParams:(VTMER3ConfigParams)params;
+
 @end
 
 @interface VTMURATUtils (WearableOximeter)
