@@ -84,6 +84,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (CGFloat)er3MvFromShort:(short)n;
 
+/// 解析配置参数
++ (VTMER3ConfigParams)parseER3ConfigParams:(NSData *)data;
+
+
 /// 解压实时波形数据
 /// @param data 波形数据
 /// @param cable 导联类型
@@ -95,6 +99,33 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param fragment 解压后数据片段
 /// @param tail 文件尾
 + (void)parseER3OriginFile:(NSData *)fileData head:(void(^)(VTMER3FileHead head))head fragment:(void(^)(NSData *subData))fragment tail:(void(^)(VTMER3FileTail tail))tail;
+
+/// 解析实时波形数据，返回12组波形数据
+/// - Parameters:
+///   - waveData: 波形数据
+///   - cable: 线缆类型
+///   - state: 电极状态
++ (NSArray<NSArray *> *)parseER3RealWaveData:(NSData *)waveData withCable:(VTMER3Cable)cable andState:(uint16_t)state;
+
+
+/// 电极脱落状态 -> 导联信号状态
+/// - Parameters:
+///   - cable: 线缆类型
+///   - state: 电极状态
++ (VTMER3LeadState)parseCable:(VTMER3Cable)cable state:(uint16_t)state;
+        
+/// 显示的导联标题
+/// - Parameter cable: 线缆类型
++ (NSArray<NSString *> *)showTitlesWithCable:(VTMER3Cable)cable;
+
+/// 显示的导联类型 与标题对应
+/// - Parameter cable: 线缆类型
++ (NSArray<NSNumber *> *)showTypesWithCable:(VTMER3Cable)cable;
+
+
++ (NSString *)titleWithCable:(VTMER3Cable)cable showLeadState:(VTMER3ShowLead)showLead;
+
+
 
 @end
 

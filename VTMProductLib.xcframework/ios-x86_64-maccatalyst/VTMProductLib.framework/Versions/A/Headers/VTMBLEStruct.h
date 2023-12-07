@@ -9,6 +9,7 @@
 #define VTMBLEStruct_h
 
 #include <CoreGraphics/CGBase.h>
+#import "VTMBLEEnum.h"
 
 // 对齐方式 首字节对齐
 #pragma pack(1)
@@ -741,18 +742,44 @@ typedef struct {
     unsigned char sec;
 } CG_BOXABLE VTMER3UTCTime;
 
-/// ER3导联类型
-typedef enum : u_char {
-    VTMER3Cable_LEAD_10 = 0x00,       // 10导            8通道
-    VTMER3Cable_LEAD_6 = 0x01,        // 6导             4通道
-    VTMER3Cable_LEAD_5 = 0x02,        // 5导             4通道
-    VTMER3Cable_LEAD_3 = 0x03,        // 3导             4通道
-    VTMER3Cable_LEAD_3_TEMP = 0x04,   // 3导 带体温       4通道
-    VTMER3Cable_LEAD_4_LEG = 0x05,    // 4导 带胸贴       4通道
-    VTMER3Cable_LEAD_5_LEG = 0x06,    // 5导 带胸贴       4通道
-    VTMER3Cable_LEAD_6_LEG = 0x07,    // 6导 带胸贴       4通道
-    VTMER3Cable_LEAD_Unidentified = 0xff,// 未识别的导联线
-} VTMER3Cable;
+
+
+/// 电极转换为对应的导联状态
+typedef union {
+    struct {
+        unsigned char I: 1;         // LA电极脱落
+        unsigned char II: 1;        // LL电极脱落
+        unsigned char III: 1;       // I or II 脱落就脱落
+        unsigned char aVR: 1;       // I or II 脱落就脱落
+        unsigned char aVL: 1;       // I or II 脱落就脱落
+        unsigned char aVF: 1;       // I or II 脱落就脱落
+        unsigned char V1: 1;        // V1电极脱落
+        unsigned char V2: 1;        // V2电极脱落
+        unsigned char V3: 1;        // V3电极脱落
+        unsigned char V4: 1;        // V4电极脱落
+        unsigned char V5: 1;        // V5电极脱落
+        unsigned char V6: 1;        // V6电极脱落
+        unsigned char reserved: 4;
+    } lead;
+    unsigned short value;
+} VTMER3LeadState;
+
+/// 设备返回电极状态
+typedef union {
+    struct {
+        unsigned char RA: 1;    // RA 电极脱落
+        unsigned char LA: 1;    // LA 电极脱落
+        unsigned char LL: 1;    // LL 电极脱落
+        unsigned char RL: 1;    // LL 电极脱落
+        unsigned char V1: 1;    // V1电极脱落
+        unsigned char V2: 1;    // V2电极脱落
+        unsigned char V3: 1;    // V3电极脱落
+        unsigned char V4: 1;    // V4电极脱落
+        unsigned char V5: 1;    // V5电极脱落
+        unsigned char V6: 1;    // V6电极脱落
+    } electrodes;
+    unsigned short value;
+} VTMER3ElectrodesState;
 
 /// @brief er3. RealTimeParameters
 typedef  struct {
@@ -828,7 +855,7 @@ typedef struct {
 typedef struct {
     uint8_t ISO;            ///< 导联是欧标 0x01显示欧标 否则 显示美标
     uint8_t logo;           ///< 开机页面 0x00 中性 0x01：LePu Medical 0x02:Wellue
-    uint8_t reserved[8];    ///< 预留
+    uint8_t reserved[18];   ///< 预留
 } CG_BOXABLE VTMER3ConfigParams;
 
 // MARK: O2Ring II struct

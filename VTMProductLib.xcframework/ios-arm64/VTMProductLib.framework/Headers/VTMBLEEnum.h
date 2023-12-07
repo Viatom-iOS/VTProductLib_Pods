@@ -205,4 +205,37 @@ typedef enum : u_char {
 
 } VTMBPStatus;
 
+
+// MARK: LepodPro
+
+/// 显示导联 @[@"I", @"II", @"III", @"aVR", @"aVL", @"aVF", @"V1", @"V2", @"V3", @"V4", @"V5", @"V6"];
+typedef NS_ENUM(NSUInteger, VTMER3ShowLead) {
+    VTMER3ShowLead_I = 0,
+    VTMER3ShowLead_II,
+    VTMER3ShowLead_III,
+    VTMER3ShowLead_aVR,
+    VTMER3ShowLead_aVL,
+    VTMER3ShowLead_aVF,
+    VTMER3ShowLead_V1,
+    VTMER3ShowLead_V2,
+    VTMER3ShowLead_V3,
+    VTMER3ShowLead_V4,
+    VTMER3ShowLead_V5,
+    VTMER3ShowLead_V6,
+};
+
+/// ER3导联类型
+typedef enum : u_char {
+    VTMER3Cable_LEAD_10 = 0x00,       // 10导            8通道
+    VTMER3Cable_LEAD_6 = 0x01,        // 6导             4通道
+    VTMER3Cable_LEAD_5 = 0x02,        // 5导             4通道
+    VTMER3Cable_LEAD_3 = 0x03,        // 3导             4通道
+    VTMER3Cable_LEAD_3_TEMP = 0x04,   // 3导 带体温       4通道
+    VTMER3Cable_LEAD_4_LEG = 0x05,    // 4导 带胸贴       4通道
+    VTMER3Cable_LEAD_5_LEG = 0x06,    // 5导 带胸贴       4通道
+    VTMER3Cable_LEAD_6_LEG = 0x07,    // 6导 带胸贴       4通道
+    VTMER3Cable_LEAD_Unidentified = 0xff,// 未识别的导联线
+} VTMER3Cable;
+
+
 #endif /* VTMBLEEnum_h */
