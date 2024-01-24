@@ -10,12 +10,14 @@
 
 typedef enum : u_char {
     VTMDeviceTypeUnknown,
-    VTMDeviceTypeECG,           ///< ER1/ER2/VBeat/DuoEK/DuoEKS
-    VTMDeviceTypeBP,            ///< BP2/BP2A/BP2T/BP2W/BP2Pro
-    VTMDeviceTypeScale,         ///< S1
-    VTMDeviceTypeER3,           ///< ER3
-    VTMDeviceTypeWOxi,       ///< O2Ring S
-    VTMDeviceTypeFOxi,     ///< PF-10BWS
+    VTMDeviceTypeECG,           // ER1/ER2/VBeat/DuoEK/DuoEKS
+    VTMDeviceTypeBP,            // BP2/BP2A/BP2T/BP2W/BP2Pro
+    VTMDeviceTypeScale,         // S1/
+    VTMDeviceTypeER3,           // Lepod/
+    VTMDeviceTypeMSeries,       // M12/M5
+    VTMDeviceTypeWOxi,          // O2Ring S/
+    VTMDeviceTypeFOxi,          // PF-10BWS/
+    VTMDeviceTypeBabyPatch,     // BBSM P1/
 } VTMDeviceType;
 
 typedef enum : u_char {
@@ -78,6 +80,7 @@ typedef enum : u_char {
     VTMECGCmdExitMeasure = 0x05,            // ER1S 结束测量
     
     VTMER3ECGCmdGetRealData = 0x03,         //  ER3获取实时数据
+    VTMMSeriesCmdGetRealData = 0x06,        // M5/M12 获取实时数据
     VTMER3ECGCmdExitMeasure = 0x07,         // ER3退出测量模式
     VTMER3ECGCmdStartMeasure = 0x08,        // ER3启动测量模式
     VTMER3ECGCmdGetConfigParams = 0x09,     // ER3获取配置参数
@@ -236,6 +239,54 @@ typedef enum : u_char {
     VTMER3Cable_LEAD_6_LEG = 0x07,    // 6导 带胸贴       4通道
     VTMER3Cable_LEAD_Unidentified = 0xff,// 未识别的导联线
 } VTMER3Cable;
+
+// MAKR: BABY
+typedef enum: u_char {
+    VTMBabyCmdGetConfig = 0x00,
+    VTMBabyCmdSetConfig ,
+    VTMBabyCmdGetRunParams,
+    VTMBabyCmdGetGesture,
+} VTMBabyCmd;
+
+typedef enum: u_char {
+    VTMBabySetParamsAll = 0,        // 预留，后续可能支持批量设置
+    VTMBabySetParamsLED ,           // 设置指示灯报警开关
+    VTMBabySetParamsBEEP ,          // 设置声音报警开关
+    VTMBabySetParamsWAIT ,          // 设置报警等待类型
+    VTMBabySetParamsTEMPLow ,       // 温度报警阈值下限
+    VTMBabySetParamsTEMPHigh,       // 温度报警阈值上限
+    VTMBabySetParamsRRLow,          // 呼吸率报警阈值下限
+    VTMBabySetParamsRRHigh ,        // 呼吸率报警阈值上限
+    VTMBabySetParamsSensivity,      // 设置报警灵敏度-->范围[1,3]
+    VTMBabySetParamsWearLEDTime,    // 佩戴指示灯工作时间设置
+} VTMBabySetParams;
+
+/* 姿势类型 */
+typedef enum {
+    VTMGyrosStatusSupine = 0,   // 仰卧
+    VTMGyrosStatusRight,        // 右侧卧
+    VTMGyrosStatusLeft,         // 左侧卧
+    VTMGyrosStatusLieProne,     // 俯卧
+    VTMGyrosStatusSitUp,        // 坐起
+} VTMGyrosStatus;
+/* 温度报警类型 */
+typedef enum {
+    VTMTempAlermNormal = 0x00,      // Normal temperature
+    VTMTempAlermLow ,               // Low temperature alarm
+    VTMTempAlermHigh,               // High temperature alarm
+    VTMTempAlermFast,               // Cooling too fast (alarm when the temperature drops by more than 3 ℃ within 15 minutes)
+} VTMTempAlerm;
+ 
+/* 系统工作状态 */
+typedef enum {
+    VTMBabyWorkStatusIDLE = 0x00,           // 待机模式（未佩戴）
+    VTMBabyWorkStatusWORK,                  // 工作模式（已佩戴）
+    VTMBabyWorkStatusCHARGE,                // 充电模式
+    VTMBabyWorkStatusTEST = 0x70,           // 测试模式
+    VTMBabyWorkStatusABNORMA = 0x80,        // 设备异常（软件、硬件设备自检异常）
+} VTMBabyWorkStatus;
+
+
 
 
 #endif /* VTMBLEEnum_h */

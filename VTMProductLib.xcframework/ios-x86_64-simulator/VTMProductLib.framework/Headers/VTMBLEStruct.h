@@ -858,6 +858,12 @@ typedef struct {
     uint8_t reserved[18];   ///< 预留
 } CG_BOXABLE VTMER3ConfigParams;
 
+typedef struct {
+    u_int event_tag_index;      // 测量时标记当前点数
+    u_short event_tag_type;     // 事件类型
+    u_char reserved[10];        // 预留
+} CG_BOXABLE VTMEREventLog;
+
 // MARK: O2Ring II struct
 typedef struct {
     u_char remind_switch;   // 提醒开关  bit0-bit3:血氧提醒开关  bit4-bit7:心率提醒开关   bit0/bit4震动  bit1/bit5声音  其他预留
@@ -1106,6 +1112,102 @@ typedef struct {
     u_char reserved[13];
     VTMWOxiResult result;           // Wearable Oximeter
 } CG_BOXABLE VTMOxiFileTail;
+
+
+// MARK: Baby
+
+
+typedef struct {
+    u_char alarm_led;               // 指示灯报警开关 bit0:踢被警告 bit1:温度报警 bit2:呼吸率报警 bit3:姿态报警 其他预留
+    u_char alarm_beep;              // 声音报警开关 bit0:踢被警告 bit1:温度报警 bit2:呼吸率报警 bit3:姿态报警 其他预留
+    u_char alarm_wait;              // 报警等待 bit0:踢被警告 bit1:温度报警 bit2:呼吸率报警 bit3:姿态报警
+    u_char temp_thr_low;            // 温度报警低阈值。范围[15,36],单位：℃，步进:1℃，下限不可高于上限
+    u_char temp_thr_high;           // 温度报警高阈值。范围[15,36],单位：℃，步进:1℃，上限不可低于下限
+    u_char rr_thr_low;              // 呼吸率报警低阈值。范围[0,70],单位：次/每分钟，步进:1，下限不可高于上限
+    u_char rr_thr_high;             // 呼吸率报警高阈值。范围[0,70],单位：次/每分钟，步进:1，上限不可低于下限
+    u_char alarm_sensitivity;       // 报警灵敏度，范围[1,3]
+    u_char wear_led_work_time;      // 佩戴指示灯工作时间，单位：分钟。0为一直工作, 1是关闭
+    u_char reserved[31];
+} CG_BOXABLE VTMBabyConfig;
+
+/*
+ typedef struct {
+ unsigned char type;    //见SystemSettingEnum
+ char reserved[3];
+ char setting[4];    //每个设置项占4个字节，与type相对应
+ } SystemOption
+
+ typedef struct{
+ unsigned char val;  //指示灯提醒开关 bit0:踢被 bit1:温度 bit2:呼吸率 bit3:趴睡
+ char reserved[3];
+ } LampSwitch
+ typedef struct{
+ unsigned char val;  //声音提醒开关 bit0:踢被 bit1:温度 bit2:呼吸率 bit3:趴睡
+ char reserved[3];
+ } BeepSwitch
+ typedef struct{
+ unsigned char val;  //通知提醒开关 bit0:踢被 bit1:温度 bit2:呼吸率 bit3:趴睡
+ char reserved[3];
+ } RemindSwitch
+ typedef struct{
+ unsigned char low;  //温度低阈值
+ char reserved[3];
+ } TempLow
+ typedef struct{
+ unsigned char high;  //温度高阈值
+ char reserved[3];
+ } TempHigh
+ typedef struct{
+ unsigned char low;  //呼吸率低阈值
+ char reserved[3];
+ } RrLow
+ typedef struct{
+ unsigned char high;  //呼吸率高阈值
+ char reserved[3];
+ } RrHigh
+ typedef struct{
+ unsigned char sensitive;  //报警灵敏度
+ char reserved[3];
+ } WarningSensitive
+ typedef struct{
+ unsigned char time;  //指示灯工作时间
+ char reserved[3];
+ } LampWorkTime
+ */
+
+typedef struct {
+    u_int record_time;                  // 已记录时长    单位:second    暂无使用
+    u_char run_status;                  // 运行状态,见系统运行状态
+    VTMGyrosStatus attitude_status;     // 姿态(1Byte),见姿态类型 注：俯卧和坐起会报警
+    u_char wear_status;                 // 脱落标识，0：未脱落  1：脱落
+    u_char rr;                          // 当前呼吸率，范围[0,255]
+    u_char alarm_type_rr;               // 呼吸报警类型(1Byte)，0：正常  1：报警
+    short cur_temperature;              // 当前温度，单位：摄氏度,范围[-32767,32767]。数据为*10的结果,
+    VTMTempAlerm alarm_type_temp;       // 温度报警类型(1Byte)，见温度报警类型
+    VTMBatteryInfo batInfo;             // 电量信息
+    u_char reserved[4];
+} CG_BOXABLE VTMBabyRunParams;
+
+
+typedef struct {
+    float Pitch;                        // 俯仰角
+    float Roll;                         // 翻滚角
+    float Yaw;                          // 偏航角
+    VTMGyrosStatus gesture;             // 姿势类型 (1Byte)
+    uint8_t RR;                         // 呼吸率
+} CG_BOXABLE VTMBabyAttRes;
+ 
+typedef struct {
+    int16_t acc_x;
+    int16_t acc_y;
+    int16_t acc_z;
+    int16_t g_x;
+    int16_t g_y;
+    int16_t g_z;
+    VTMBabyAttRes alg_result;
+} VTMBabyAtt;
+
+
 
 
 #pragma pack()

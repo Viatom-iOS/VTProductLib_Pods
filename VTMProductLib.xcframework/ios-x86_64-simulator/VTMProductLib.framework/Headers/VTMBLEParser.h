@@ -55,6 +55,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSArray *)parseOrignalPoints:(NSData *)pointData;
 
++ (void)parseEventData:(NSData *)data result:(void(^)(VTMFileHead head, NSUInteger count,  VTMEREventLog * _Nullable logs))finished;
+
 #pragma mark --- Besides DuoEK's a-file
 + (void)parseWaveHeadAndTail:(NSData *)data result:(void(^)(VTMFileHead head, VTMER2FileTail tail))finished;
 #pragma mark --- DuoEK a-file
@@ -100,6 +102,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param tail 文件尾
 + (void)parseER3OriginFile:(NSData *)fileData head:(void(^)(VTMER3FileHead head))head fragment:(void(^)(NSData *subData))fragment tail:(void(^)(VTMER3FileTail tail))tail;
 
+/// ER3解压原始文件数据
+/// @param fileData 原始文件
+/// @param leadFragments 12组对应导联的数据，根本不同导线线，一些导联data为空
++ (void)parseER3OriginFile:(NSData *)fileData head:(void(^)(VTMER3FileHead head))tailBlock leadFragments:(void(^)(NSArray<NSData *> *leadDatas))leadFragments tail:(void(^)(VTMER3FileTail tail))tailBlock;
+
 /// 解析实时波形数据，返回12组波形数据
 /// - Parameters:
 ///   - waveData: 波形数据
@@ -125,7 +132,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSString *)titleWithCable:(VTMER3Cable)cable showLeadState:(VTMER3ShowLead)showLead;
 
-
+/// 解析事件文件数据
++ (void)parseER3EventData:(NSData *)data result:(void(^)(VTMER3FileHead head, VTMER3FileTail tail, NSUInteger count,  VTMEREventLog * _Nullable logs))finished;
 
 @end
 
@@ -218,5 +226,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface VTMBLEParser (BabyMonitor)
+
++ (VTMBabyConfig)baby_parseConfig:(NSData *)data;
+
++ (VTMBabyRunParams)baby_parseRunParams:(NSData *)data;
+
++ (VTMBabyAtt)baby_parseAttitude:(NSData *)data;
+
+@end
 
 NS_ASSUME_NONNULL_END

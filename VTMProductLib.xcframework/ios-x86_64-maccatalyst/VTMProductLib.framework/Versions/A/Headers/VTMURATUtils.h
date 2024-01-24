@@ -45,7 +45,7 @@
 
 /// @brief an error occured at send command to device.
 /// @param util util
-/// @param errorCode  0: peripheral == nil  1: txcharacteristic == nil  2:peripheral.state != connected
+/// @param errorCode  0: peripheral == nil  1: txcharacteristic == nil  2:peripheral.state != connected 3: timeout
 - (void)util:(VTMURATUtils * _Nonnull)util commandSendFailed:(u_char)errorCode;
 
 
@@ -278,3 +278,16 @@
 
 @end
 
+@interface VTMURATUtils (BabyMonitor)
+
+- (void)baby_requestConfig;
+
+- (void)baby_syncConfigParam:(VTMOxiParamsOption)param;
+
+/// 获取运行状态
+- (void)baby_requestRunParams;
+
+/// 获取姿势
+- (void)baby_requestGesture;
+
+@end
