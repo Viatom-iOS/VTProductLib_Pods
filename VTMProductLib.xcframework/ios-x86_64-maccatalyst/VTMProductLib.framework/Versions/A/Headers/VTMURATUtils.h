@@ -20,6 +20,16 @@
 #import "VTMBLEEnum.h"
 
 @class VTMURATUtils;
+
+@protocol VTMURATDeviceExtension <NSObject>
+
+@optional
+/// @brief extend the device name prefix
+/// @param deviceType device type
+- (NSArray<NSString *> *_Nullable)extensionNamePrefixsWithType:(VTMDeviceType)deviceType;
+
+@end
+
 @protocol VTMURATDeviceDelegate <NSObject>
 
 @optional
@@ -79,6 +89,9 @@
 
 /// @brief manage discover services and characteristics.
 @property (nonatomic, assign) id <VTMURATDeviceDelegate> _Nullable deviceDelegate;
+
+/// @brief extension device
+@property (nonatomic, weak) id<VTMURATDeviceExtension> _Nullable extension;
 
 /// @brief notify standard service
 @property (nonatomic) BOOL notifyHeartRate;
