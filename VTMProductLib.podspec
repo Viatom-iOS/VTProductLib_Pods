@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "VTMProductLib"
-  spec.version      = "1.3.9"
+  spec.version      = "1.4.0"
   spec.summary      = "Support Lepu's products."
 
   # This description is used to generate tags and improve search results.
