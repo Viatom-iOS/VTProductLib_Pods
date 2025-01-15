@@ -74,6 +74,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (VTMER1Config)parseER1Config:(NSData *)data;
 
++ (VTMER1NewConfig)parseER1NewConfig:(NSData *)data;
+
 #pragma mark --- ER2/DuoEK
 
 + (VTMER2Config)parseER2Config:(NSData *)data;
@@ -143,6 +145,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (VTMRealTimePressure)parseBPRealTimePressure:(NSData *)data;
 
++ (VTMBPRunStatus)parseBPRealTimeStatus:(NSData *)data;
+
 + (VTMBPRealTimeWaveform)parseBPRealTimeWaveform:(NSData *)data;
 
 + (VTMBPRealTimeData)parseBPRealTimeData:(NSData *)data;
@@ -178,6 +182,14 @@ NS_ASSUME_NONNULL_BEGIN
 + (VTMWiFiConfig)parseWiFiConfig:(NSData *)data;
 
 + (NSData *)getByteWithWiFiConfig:(VTMWiFiConfig)config;
+
++ (VTMBP3AlarmInfo)bp3_parseAlarmInfo:(NSData *)data;
+
++ (NSData *)getByteWithAlarmInfo:(VTMBP3AlarmInfo)info;
+
++ (VTMBP3FileData)bp3_parseBPFileData:(NSData *)data;
+
++ (VTMBP3ECGFileData)bp3_parseECGFileData:(NSData *)data;
 
 @end
 

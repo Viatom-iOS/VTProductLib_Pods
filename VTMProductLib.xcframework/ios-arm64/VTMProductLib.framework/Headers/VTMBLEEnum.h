@@ -98,13 +98,17 @@ typedef enum : u_char {
     VTMBPCmdSwiRunStatus = 0x09,
     VTMBPCmdStartMeasure = 0x0A,
     VTMBPCmdSetConfig = 0x0B,
-    /** BP2 WiFi  */
+    /** BP2 WiFi / bp3 */
     VTMBPCmdScanWiFiList = 0x11,
     VTMBPCmdSetWiFiConfig = 0x12,
     VTMBPCmdGetWiFiConfig = 0x13,
+    /** BP3 */
+    VTMBPCmdSetAlarmInfo = 0x14,
+    VTMBPCmdGetAlarmInfo = 0x15,
     VTMBPCmdGetCRCUserList = 0x30,     // 获取用户列表校验
     VTMBPCmdGetCRCECGList = 0x31,
-    VTMBPCmdGetCRCBPList = 0x32
+    VTMBPCmdGetCRCBPList = 0x32,
+    VTMBPCmdBindStatus = 0x35, 
 } VTMBPCmd;
 
 typedef enum : u_char {
@@ -204,9 +208,29 @@ typedef enum : u_char {
     VTMBPStatusBPAVGMeasure = 15,       // BP2WIFI血压测量x3中
     VTMBPStatusBPAVGMeasureWait = 16,   // BP2WIFI血压测量x3等待开始状态
     VTMBPStatusBPAVGMeasureEnd = 17,    // BP2WIFI血压测量x3结束
-//    STATUS_VEN = 20,                  // BP2理疗 理疗模式中
+    VTMBPStatusVEN = 20,    //BP2理疗 理疗模式中
+    VTMBPStatusBPMeasuringBP3 = 21,  // BP3血压心电测量中
+    VTMBPStatusBPMeasureEndBP3 = 22,  // BP3血压心电测量结束
+    VTMBPStatusECGMeasuringBP3 = 23,    //BP3血压心电测量x3中
+    VTMBPStatusECGMeasureEndBP3 = 24,    //BP3血压心电测量x3结束
+    VTMBPStatusNetworkConfig = 25,    //配置WiFi和服务器
+    VTMBPStatusDataUploading = 26,    //数据上传服务器
+    VTMBPStatusINVAIL = 0xFF,
 
 } VTMBPStatus;
+
+// MARK: BP3
+//week_repeat的最高位表示是否重复，1表示每个星期都重复，0表示永不重复，若是永不重复则week_repeat的低7位要全部填1(即0x7F)，以表示每天都有效，这样设备则会仅定时测量一次后删除。
+typedef enum : u_char {
+    VTMBPRepeatSun     = 1<<0,  //  every Sunday repeat
+    VTMBPRepeatMon     = 1<<1,  //  every Monday repeat
+    VTMBPRepeatTues    = 1<<2,  //  every Tuesday repeat
+    VTMBPRepeatWed     = 1<<3,  //  every Wednesday repeat
+    VTMBPRepeatThu     = 1<<4,  //  every Thursday repeat
+    VTMBPRepeatFri     = 1<<5,  //  every Friday repeat
+    VTMBPRepeatSat     = 1<<6,  //  every Saturday repeat
+    VTMBPRepeatNone    = 1<<7,  //  1:重复, 0:不重复
+} VTMBPRepeat;
 
 
 // MARK: LepodPro

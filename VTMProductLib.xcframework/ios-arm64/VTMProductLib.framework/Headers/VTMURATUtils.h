@@ -174,6 +174,10 @@
 /// @param config  ER1/VBeat配置信息
 - (void)syncER1Config:(VTMER1Config)config;
 
+/// @brief 同步ER1/VBeat配置信息  ---  when software version higher than 1.0.2.0
+/// @param config  ER1/VBeat配置信息
+- (void)syncER1NewConfig:(VTMER1NewConfig)config;
+
 /// @brief 退出测量
 - (void)exitER1MeasurementMode;
 
@@ -211,6 +215,15 @@
 
 /// @brief 请求获取 用户文件的CRC32校验码
 - (void)requestCRCFromBPWUserList;
+
+/// real-time run status.
+- (void)bp_requestRealStatus;
+
+- (void)bp3_syncAlarmInfo:(VTMBP3AlarmInfo)info;
+
+- (void)bp3_requestAlarmInfo;
+
+- (void)bp3_syncBindStatus:(u_char)status;
 
 @end
 

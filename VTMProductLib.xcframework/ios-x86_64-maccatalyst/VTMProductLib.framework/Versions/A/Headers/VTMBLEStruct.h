@@ -286,6 +286,22 @@ VTMER1Config {
 };
 typedef struct CG_BOXABLE VTMER1Config VTMER1Config;
 
+/*
+ * Pls use this struct when er1 software version higher than 1.0.2.0
+ */
+struct
+VTMER1NewConfig {
+    // bit0: high HR. bit1: for low battery. bit2: for waveform error.
+    // bit3: . bit4: mark. bit5: low HR
+    u_char threshold_switch;
+    u_char hrTarget1;       // lower of high threshold . the device vibrates if real-time HR value is higher this value. one vibration per ten secs.
+    u_char hrTarget2;       // higher of high threshold. the device vibrates if real-time HR value is higher this value. one vibration per two secs.
+    u_char hrLowThreshold;  // low threshold. the device vibrates if real-time HR value is lower this value. one vibration per ten secs.
+    u_char reserved[8];
+};
+typedef struct CG_BOXABLE VTMER1NewConfig VTMER1NewConfig;
+
+
 /// @brief point. EqulTo PointData_t
 struct
 VTMER1PointData {
@@ -395,9 +411,15 @@ VTMBPConfig {
     u_int sleep_ticks;         //上次进休眠待机时间
     u_short bp_test_target_pressure; // 血压测试目标打气阈值
     u_char device_switch;      // 蜂鸣器开关 0：关  1：开 bit0:声音 bit1:快速心电
-    u_char avg_measure_mode;        //BP2WiFi X3测量档位可设置0-4共5个档
-    u_char volume;                    //音量大小 0-100
-    u_char reserved[13];        //预留
+    u_char avg_measure_mode;        //BP2WiFi X3测量档位可设置0-4共5个档 Off/30s/60s/90s/120s（默认关闭）
+    u_char volume;                    //语音播报音量，0：关闭
+    u_char reserved1[4];  // 国内bp2WiFi userid
+    u_char time_utc;  // 设备时区，默认8时区
+    u_char reserved2;  // 定制BP2A_Sibel 熄屏开关 0：关，1：开
+    u_char reserved3;  // 运行状态
+    u_char wifi_4g_switch;    // BP3 WiFi/4G开关,0:关1:开
+    u_char unit;    //单位设置。bit0：（血压单位， 0：mmHg，1：KPa。1Kpa = 7.5mmHg）
+    u_char reserved4[4];    //预留
 };
 typedef struct CG_BOXABLE VTMBPConfig VTMBPConfig;
 
@@ -646,6 +668,115 @@ VTMBPUserInfo {
     VTMBitMap bitMap;                //用户图标，BP2用于显示姓名
 };
 typedef struct CG_BOXABLE VTMBPUserInfo VTMBPUserInfo;
+
+
+#pragma mark --- BP3
+
+
+// 不同type的值对应不同的Data结构体（固定20个字节）
+// Type = 0:（血压测量中）
+struct
+VTMBP3RealDataType0 {
+    unsigned char  is_deflating;     //是否放气 0：否；1：是
+    short pressure;  //实时压（mmHg）*100
+    unsigned char  is_get_pulse;   //是否检测到脉搏信号 0：否；1：是
+    unsigned short pulse_rate;       //脉率
+    unsigned char  reserved[14];      //预留
+} ;
+typedef struct CG_BOXABLE VTMBP3RealDataType0 VTMBP3RealDataType0;
+
+// Type = 1:（血压测量结束）
+struct
+VTMBP3RealDataType1 {
+    unsigned char  is_deflating;     //是否放气 0：否；1：是
+    short pressure;  //实时压
+    unsigned short systolic_pressure;    //收缩压
+    unsigned short diastolic_pressure;  //舒张压
+    unsigned short mean_pressure;       //平均压
+    unsigned short pulse_rate;       //脉率
+    unsigned char  state_code;      //状态码（见下方血压测量状态码释义）
+    unsigned char  medical_result;       //诊断结果 bit0:心率不齐
+    unsigned char  reserved[7];//预留
+};
+typedef struct CG_BOXABLE VTMBP3RealDataType1 VTMBP3RealDataType1;
+
+// Type = 2:（心电测量中）
+struct
+VTMBP3RealDataType2 {
+    unsigned int     duration;  //当前测量时长（单位：秒）
+    unsigned int     special_status; //特殊状态 bit0:是否信号弱，bit1:是否导联脱落
+    unsigned short hr_rate;       //心率
+    unsigned char  reserved[10];      //预留
+} ;
+typedef struct CG_BOXABLE VTMBP3RealDataType2 VTMBP3RealDataType2;
+
+// Type = 3:（心电测量结束）
+struct
+VTMBP3RealDataType3 {
+    unsigned int    result;       //诊断结果（见下方心电测量状态码释义）
+    unsigned short hr;     //心率 单位：bpm
+    unsigned short qrs;   //QRS 单位：ms
+    unsigned short pvcs; //PVC个数
+    unsigned short qtc;   //QTc 单位：ms
+    unsigned char  reserved[8];//预留
+} ;
+typedef struct CG_BOXABLE VTMBP3RealDataType3 VTMBP3RealDataType3;
+
+// Type = 4:（血压心电测量中）
+struct
+VTMBP3RealDataType4 {
+    unsigned char  is_deflating;     //是否放气 0：否；1：是
+    short pressure;  //实时压
+    unsigned char  is_get_pulse;   //是否检测到脉搏信号 0：否；1：是
+    unsigned short pulse_rate;       //脉率
+    unsigned int     duration;  //当前测量时长（单位：秒）
+    unsigned int     special_status; //特殊状态 bit0:是否信号弱，bit1:是否导联脱落
+    unsigned short hr_rate;       //心率
+    unsigned char  reserved[4];      //预留
+} ;
+typedef struct CG_BOXABLE VTMBP3RealDataType4 VTMBP3RealDataType4;
+
+
+
+struct
+VTMBP3AlarmItem{
+    unsigned char week_repeat;  // week repeat bit set, week_repeat_enum
+    unsigned char hour;
+    unsigned char min;
+    unsigned char reserved;     // 预留
+};
+typedef struct CG_BOXABLE VTMBP3AlarmItem VTMBP3AlarmItem;
+
+
+struct
+VTMBP3AlarmInfo{
+    unsigned char status;    // 0: 关闭，1:打开
+    unsigned char items;     // items number, max 5
+    VTMBP3AlarmItem* info;  // items info , maybe has much more
+};
+typedef struct CG_BOXABLE VTMBP3AlarmInfo VTMBP3AlarmInfo;
+
+struct 
+VTMBP3BPResult {
+    VTMBPWBPResult result;
+    u_char pulse_flag;
+};
+typedef struct CG_BOXABLE VTMBP3BPResult VTMBP3BPResult;
+
+struct
+VTMBP3FileData {
+    VTMBPWFileDataHead head;
+    VTMBP3BPResult list[50];
+};
+typedef struct CG_BOXABLE VTMBP3FileData VTMBP3FileData;
+
+struct
+VTMBP3ECGFileData {
+    VTMBPWFileDataHead head;
+    VTMBPWECGResult list[20];
+};
+typedef struct CG_BOXABLE VTMBP3ECGFileData VTMBP3ECGFileData;
+
 
 #pragma mark --- Scale 1
 /// @brief run parameters of s1. EqulTo DeviceRunParameters of s1
