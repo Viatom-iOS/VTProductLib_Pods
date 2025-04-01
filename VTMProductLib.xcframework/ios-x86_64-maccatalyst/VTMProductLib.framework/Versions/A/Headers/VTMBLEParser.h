@@ -246,6 +246,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (VTMBabyAtt)baby_parseAttitude:(NSData *)data;
 
++ (void)baby_parseRecordFile:(NSData *)data completion:(void(^)(VTMOxiFileHead fileHead, VTMBabyRecordHead head, VTMBabyRecord_t *records, NSInteger recordNum))completion;
+
++ (void)baby_parseEventFile:(NSData *)data completion:(void(^)(VTMOxiFileHead fileHead, VTMBabyEventHead head, VTMBabyEventLog_t *events, NSInteger recordNum))completion;
+
 @end
 
 NS_ASSUME_NONNULL_END

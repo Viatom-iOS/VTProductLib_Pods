@@ -286,23 +286,29 @@ typedef enum: u_char {
 } VTMBabySetParams;
 
 /* 姿势类型 */
-typedef enum {
-    VTMGyrosStatusSupine = 0,   // 仰卧
-    VTMGyrosStatusRight,        // 右侧卧
-    VTMGyrosStatusLeft,         // 左侧卧
-    VTMGyrosStatusLieProne,     // 俯卧
-    VTMGyrosStatusSitUp,        // 坐起
-} VTMGyrosStatus;
+typedef enum: u_char {
+    VTMBabyGyrosStatusSupine = 0,   // 仰卧
+    VTMBabyGyrosStatusRight,        // 右侧卧
+    VTMBabyGyrosStatusLeft,         // 左侧卧
+    VTMBabyGyrosStatusProne,     // 俯卧
+    VTMBabyGyrosStatusSitUp,        // 坐起
+} VTMBabyGyrosStatus;
 /* 温度报警类型 */
-typedef enum {
-    VTMTempAlermNormal = 0x00,      // Normal temperature
-    VTMTempAlermLow ,               // Low temperature alarm
-    VTMTempAlermHigh,               // High temperature alarm
-    VTMTempAlermFast,               // Cooling too fast (alarm when the temperature drops by more than 3 ℃ within 15 minutes)
-} VTMTempAlerm;
+typedef enum: u_char {
+    VTMBabyTempAlermNormal = 0x00,      // Normal temperature
+    VTMBabyTempAlermLow ,               // Low temperature alarm
+    VTMBabyTempAlermHigh,               // High temperature alarm
+    VTMBabyTempAlermFast = 0x04,               // Cooling too fast (alarm when the temperature drops by more than 3 ℃ within 15 minutes)
+} VTMBabyTempAlerm;
+
+typedef enum: u_char {
+    VTMBabyRrAlarmNone = 0x00,  //Normal respiratory rate
+    VTMBabyRrAlarmLow = 0x01,  //Low respiratory rate alarm
+    VTMBabyRrAlarmHigh = 0x02, //High respiratory rate alarm
+} VTMBabyRrAlarm;
  
 /* 系统工作状态 */
-typedef enum {
+typedef enum: u_char {
     VTMBabyWorkStatusIDLE = 0x00,           // 待机模式（未佩戴）
     VTMBabyWorkStatusWORK,                  // 工作模式（已佩戴）
     VTMBabyWorkStatusCHARGE,                // 充电模式
@@ -310,7 +316,14 @@ typedef enum {
     VTMBabyWorkStatusABNORMA = 0x80,        // 设备异常（软件、硬件设备自检异常）
 } VTMBabyWorkStatus;
 
-
+typedef enum: u_short {
+    VTMBabyEventIdLieProne = 0x0001,
+    VTMBabyEventIdTempLow = 0x0002,
+    VTMBabyEventIdTempHigh = 0x0003,
+    VTMBabyEventIdTempDrop = 0x0004,
+    VTMBabyEventIdRRLow = 0x0005,
+    VTMBabyEventIdRRHigh = 0x0006,
+} VTMBabyEventId;
 
 
 #endif /* VTMBLEEnum_h */

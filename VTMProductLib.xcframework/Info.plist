@@ -6,9 +6,9 @@
 	<array>
 		<dict>
 			<key>BinaryPath</key>
-			<string>VTMProductLib.framework/Versions/A/VTMProductLib</string>
+			<string>VTMProductLib.framework/VTMProductLib</string>
 			<key>LibraryIdentifier</key>
-			<string>ios-x86_64-maccatalyst</string>
+			<string>ios-x86_64-simulator</string>
 			<key>LibraryPath</key>
 			<string>VTMProductLib.framework</string>
 			<key>SupportedArchitectures</key>
@@ -18,7 +18,7 @@
 			<key>SupportedPlatform</key>
 			<string>ios</string>
 			<key>SupportedPlatformVariant</key>
-			<string>maccatalyst</string>
+			<string>simulator</string>
 		</dict>
 		<dict>
 			<key>BinaryPath</key>
@@ -36,9 +36,9 @@
 		</dict>
 		<dict>
 			<key>BinaryPath</key>
-			<string>VTMProductLib.framework/VTMProductLib</string>
+			<string>VTMProductLib.framework/Versions/A/VTMProductLib</string>
 			<key>LibraryIdentifier</key>
-			<string>ios-x86_64-simulator</string>
+			<string>ios-x86_64-maccatalyst</string>
 			<key>LibraryPath</key>
 			<string>VTMProductLib.framework</string>
 			<key>SupportedArchitectures</key>
@@ -48,7 +48,7 @@
 			<key>SupportedPlatform</key>
 			<string>ios</string>
 			<key>SupportedPlatformVariant</key>
-			<string>simulator</string>
+			<string>maccatalyst</string>
 		</dict>
 	</array>
 	<key>CFBundlePackageType</key>
