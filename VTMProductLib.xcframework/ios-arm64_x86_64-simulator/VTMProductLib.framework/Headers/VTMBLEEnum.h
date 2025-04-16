@@ -295,11 +295,12 @@ typedef enum: u_char {
 } VTMBabyGyrosStatus;
 /* 温度报警类型 */
 typedef enum: u_char {
-    VTMBabyTempAlermNormal = 0x00,      // Normal temperature
-    VTMBabyTempAlermLow ,               // Low temperature alarm
-    VTMBabyTempAlermHigh,               // High temperature alarm
-    VTMBabyTempAlermFast = 0x04,               // Cooling too fast (alarm when the temperature drops by more than 3 ℃ within 15 minutes)
-} VTMBabyTempAlerm;
+    VTMBabyTempAlermNormal = 0,      // Normal temperature
+    VTMBabyTempAlermLow = 1 << 0,               // Low temperature alarm
+    VTMBabyTempAlermHigh = 1 << 1,               // High temperature alarm
+    VTMBabyTempAlermFast = 1 << 2,        // Cooling too fast (alarm when the temperature drops by more than 3 ℃ within 15 minutes)
+} VTMBabyTempAlarm;  // by bit
+
 
 typedef enum: u_char {
     VTMBabyRrAlarmNone = 0x00,  //Normal respiratory rate

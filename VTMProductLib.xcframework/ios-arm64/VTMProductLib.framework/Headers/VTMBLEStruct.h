@@ -1313,9 +1313,9 @@ typedef struct {
     VTMBabyGyrosStatus attitude_status; // 姿态(1Byte),见姿态类型 注：俯卧和坐起会报警
     u_char wear_status;                 // 脱落标识，0：未脱落  1：脱落
     u_char rr;                          // 当前呼吸率，范围[0,255]
-    VTMBabyRrAlarm alarm_type_rr;       // 呼吸报警类型(1Byte)，0：正常  1：报警
+    u_char alarm_type_rr;       // 呼吸报警类型(1Byte)，0：正常  1：报警
     short cur_temperature;              // 当前温度，单位：摄氏度,范围[-32767,32767]。数据为*10的结果,
-    VTMBabyTempAlerm alarm_type_temp;   // 温度报警类型(1Byte)，见温度报警类型
+    u_char alarm_type_temp;   // 温度报警类型(1Byte)，见温度报警类型
     VTMBatteryInfo batInfo;             // 电量信息
     u_int startup_time;                 // 开机时长, 单位：秒
     u_char gesture_alarm;               // 趴睡报警, 0x01
