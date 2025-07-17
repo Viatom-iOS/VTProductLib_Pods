@@ -6,7 +6,7 @@
 	<dict>
 		<key>Resources/Info.plist</key>
 		<data>
-		oQQbOWJMwjI2GDdhCqe686VkWEA=
+		18N3B387+e7fKvswbI9f6gUksIg=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -15,33 +15,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			40x6hUxMe+ZeopmF4UXBIZBoTCk=
+			+wasaaWYo3gaxKIFOnCRTsi9lFo=
 			</data>
 			<key>hash2</key>
 			<data>
-			RVUpHF3tgOa+zHDYB74J/7Pc5GkEyym5vRNKnnzKHto=
+			PKDw/TJQsllRMCC9F0bGXr3QPqRo5AGNlP4sGaLRo1o=
 			</data>
 		</dict>
 		<key>Headers/VTMBLEParser.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			hX9VW1vGM6ntlV4KNcEqorbtdac=
+			BubsAtQwcmJQowPt6+z0Lb3/mUo=
 			</data>
 			<key>hash2</key>
 			<data>
-			svCveNkxUDlh/tVzvXRzfLzFTVL3QxlruJgk2J5WJYA=
+			tAyyIDbbf5j67FR001CySmaZwK7vB0gCd0cFBvW9Xg8=
 			</data>
 		</dict>
 		<key>Headers/VTMBLEStruct.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			XAl+by5Vaz4BIR5kalemYNwhUEg=
+			QZNhhPh3xZs+JzbsUdukvWQ6hSI=
 			</data>
 			<key>hash2</key>
 			<data>
-			OQG8UxKFhTbJKsBAQFyV+sC6DJUbgkqVxaG03NwmU+c=
+			xL+35sxNQKSuChnwl8P7ghjq3ZNpOtsPiC1MPUmqFmw=
 			</data>
 		</dict>
 		<key>Headers/VTMCalibrate.h</key>
@@ -81,11 +81,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			y+KVRhMostYRQWCrqhUdVI58npc=
+			0KoLx4LjKJDJyA9+LXH5XDMy8uQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			VZYM/QgbB/xoKfNCyLsEjL1OpWqB4D3gJNbwmK6+ygY=
+			S8ihRIuOSUpqkXULGlzH/n+TY0XzHWs7r38vT8vA9uk=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -103,11 +103,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			oQQbOWJMwjI2GDdhCqe686VkWEA=
+			18N3B387+e7fKvswbI9f6gUksIg=
 			</data>
 			<key>hash2</key>
 			<data>
-			+1D1jjrXvYDvi7kZoLWq1V3Ds5bvL5LIeANbsrBCuY4=
+			wgEbX6MIpsqTkNkxNpDa9cSr/ARVlQ8nD5qdPe/63SM=
 			</data>
 		</dict>
 	</dict>

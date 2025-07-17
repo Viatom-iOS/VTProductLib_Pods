@@ -18,6 +18,7 @@ typedef enum : u_char {
     VTMDeviceTypeWOxi,          // O2Ring S/
     VTMDeviceTypeFOxi,          // PF-10BWS/
     VTMDeviceTypeBabyPatch,     // BBSM P1/
+    VTMDeviceTypeVentilator,    // R200/
 } VTMDeviceType;
 
 typedef enum : u_char {
@@ -325,6 +326,17 @@ typedef enum: u_short {
     VTMBabyEventIdRRLow = 0x0005,
     VTMBabyEventIdRRHigh = 0x0006,
 } VTMBabyEventId;
+
+typedef enum : u_char {
+    VTMRVentilatorCmdScanWiFi = 0x11,
+    VTMRVentilatorCmdSetWiFiConfig = 0x12,
+    VTMRVentilatorCmdWiFiConfig = 0x13,
+    VTMRVentilatorCmdGetLatest = 0x30,
+    VTMRVentilatorCmdGetStatisticsList = 0x31,
+    VTMRVentilatorCmdGetStatisticsFileStart = 0x32,
+    VTMRVentilatorCmdGetStatisticsFileRead = 0x33,
+    VTMRVentilatorCmdGetStatisticsFileEnd = 0x34,
+} VTMRVentilatorCmd;
 
 
 #endif /* VTMBLEEnum_h */

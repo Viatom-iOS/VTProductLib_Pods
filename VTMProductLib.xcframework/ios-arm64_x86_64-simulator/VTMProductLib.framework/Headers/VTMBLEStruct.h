@@ -1368,6 +1368,234 @@ typedef struct {
     u_char reserved[2];
 } CG_BOXABLE VTMBabyEventLog_t;
 
+
+// MARK: - R20/R200
+typedef struct {
+    uint8_t filter;                     //过滤棉 默认值:0 范围:0-12  0:关闭
+    uint8_t mask;                       //面罩  默认值:0 范围:0-12  0:关闭
+    uint8_t tube;                       //管路  默认值:0 范围:0-12  0:关闭
+    uint8_t water_tank;                 //水箱  默认值:0 范围:0-12  0:关闭
+    uint32_t filter_alarm_timestamp;    //过滤棉闹钟时间
+    uint32_t mask_alarm_timestamp;      //面罩闹钟时间
+    uint32_t tube_alarm_timestamp;      //管路闹钟时间
+    uint32_t water_alarm_timestamp;     //水箱闹钟时间
+} CG_BOXABLE VTMRReminder_t;
+
+typedef struct {
+    unsigned char Leak_Level;      //漏气量 0：off（默认），15s，30s，45s，60s
+    unsigned char MV_Level;        //分钟通气量 0：off（默认），0-25L/min，步进：1L/min
+    unsigned short VT_Level;       //潮气量 0：off（默认），20-200对应200-2000ml， 步进：10ml
+    unsigned char RR_High_Level;   //呼吸率高 0：off（默认）1-60bmp，步进：1bpm
+    unsigned char RR_Low_Level;    //呼吸率低 0：off（默认）1-60bmp，步进：1bpm
+    unsigned char SpO2_Level;      //血氧 0：off，80-95%，默认值90%，步进：1%
+    unsigned char PR_High_Level;   //脉率高 0：off（默认），100-240 /min，步进：10
+    unsigned char PR_Low_Level;    //脉率高 0：off（默认），30-70 /min，步进：5
+    unsigned char Apnea_Level;     //呼吸暂停 0：off（默认），10s，20s，30s
+} CG_BOXABLE VTMRHintSettings_t;
+
+typedef struct {
+    //通气设置相关
+    uint8_t humidity;               //湿化等级 0-5级 默认3级 步长1 0为关  0xff为自动湿化
+    uint8_t i_p_r;                  //吸气压力释放 0-3档 0为关 单水平默认2 双水平默认
+    uint8_t e_p_r;                  //呼气压力释放 0-3档 0为关 单水平默认2 双水平默认
+    uint8_t auto_sw;                //自动启动和停止开关 bit0:自动启动 0:关 默认1:开 bit1:自动停止 0:关 默认1:开
+    uint8_t preheat_sw;             //预加热开关 默认0:关 预加热最长时间为30min，无水禁用
+    uint8_t ramp_pressure;          //缓冲压力 默认值:40 步长:5 范围:30-CPAP_pressure/APAP_pressure_max 单位0.1cmH2O
+    uint8_t ramp_time;              //缓冲时间 0-60min 默认15 步长5 0xFF为自动
+    uint8_t tube_type;              //管路类型 0:15mm(CPAP设备) 1:19mm(BPAP设备)
+    uint8_t mask_type;              //面罩类型 0:full(口鼻罩) 1:face(面罩) 2:nasal(鼻罩) 3:pillow(鼻枕)
+    uint8_t mask_test_pressure;     //面罩佩戴匹配测试压力 默认值:100  步长:10 范围:60-180  单位0.1cmH2O
+    VTMRHintSettings_t hint_param;
+    uint8_t reserved2[6];
+} CG_BOXABLE VTMRVentilationSettings_t;
+
+typedef struct {
+    //通气控制参数
+    /*
+     约束关系
+     IPAP≥EPAP+2cmH2O (CFDA)
+     IPAP≥EPAP (CE)
+     rise_time≤Min(inspiratory_time,"900ms")
+     inspiratory_time < (60/F)*2/3
+     respiratory_frequency < 60/(Ti/2*3)
+     */
+    uint8_t ventilation_mode;     //通气模式 0:CPAP 1:APAP 2:S  3:S/T  4:T
+    uint8_t CPAP_pressure;     //CPAP模式压力  默认值:60 步长:5 范围:40-200 单位0.1cmH2O
+    uint8_t APAP_pressure_max;   //APAP模式压力最大值Pmax 默认值:120 步长:5 范围:Pmin-200 单位0.1cmH2O
+    uint8_t APAP_pressure_min;   //APAP模式压力最小值Pmin 默认值:40 步长:5 范围:40-Pmax  单位0.1cmH2O
+    uint8_t IPAP;          //吸气压力 默认值:100 步长:5 范围:40-250  单位0.1cmH2O
+    uint8_t EPAP;          //呼气压力 默认值:60  步长:5 范围:40-250  单位0.1cmH2O
+    uint8_t inspiratory_time;    //吸气时间 默认值:10  步长:1 范围:3-40   单位0.1s
+    uint8_t respiratory_frequency; //呼吸频率 默认值:12  步长:1 范围:5-30   单位/min
+    uint16_t rise_time;       //压力上升时间  默认值:200  步长:50 范围:100-900   单位ms
+    uint8_t i_trigger;       //吸气触发灵敏度Inspiratory Trigger 默认值:3档 范围:0-5档  0:自动档
+    uint8_t e_trigger;       //呼气触发灵敏度Expiratory Trigger 默认值:3档 范围:0-5档  0:自动档
+    uint16_t sample;       //送算法的频率  单位：Hz
+    uint8_t reserved1[18];
+} CG_BOXABLE VTMRVentilationControl_t;
+
+typedef struct {
+    unsigned char  len;
+    char      str[64];
+} CG_BOXABLE VTMRFixedElement_t;
+
+//typedef struct {
+//    /* 模块对应绑定设备的唯一通道id, 0是模块本身，最大支持16个通道设备，未绑定状态通道id值无效 */
+//    unsigned char channel_id;
+//    /* 当前连接状态 0 : 已断开 ; 1 : 连接中 ; 2 : 已连接 / 连接设备 ; 3 : 解除配对 */
+//    unsigned char state;
+//    /* 设备类型 */
+//    unsigned char type;
+//    /* mac地址 */
+//    unsigned char mac[6];
+//    /* rssi 值 */
+//    char rssi;
+//    /* 设备广播名 */
+//    Element_Save_t dev_name;
+//} BleDeviceInfo_Save_t;
+
+//typedef struct {        //服务器信息
+//    unsigned char  num;
+//    /* 设备成员信息结构体数组 */
+//    BleDeviceInfo_Save_t dev_info[3];
+//    // /* 设备数量 */
+//    // unsigned char  num;
+//    // /* 设备成员信息结构体数组 */
+//    // BLEDeviceInfo_t dev_info[3];  //目前只支持单个设备绑定
+//}BLEDeviceConfiguration_t;
+
+
+typedef struct
+{
+    unsigned char  num;
+    VTMWiFiInfo info[3];    //最大支持3个wifi
+} CG_BOXABLE VTMRWifiConfig_t;
+
+
+//typedef struct
+//{
+//    //系统设置
+//    uint8_t unit;                     //单位  bit0:压力单位 默认0:cmH2O 1:hPa
+//    uint8_t lang_id;                  //语言id 0:英文 1:中文
+//    uint8_t brightness;               //屏幕亮度 0-100% 默认:60
+//    uint8_t auto_lock_screen_time;    /*自动息屏时间 单位s (默认30 : 常亮 0) */
+//    uint8_t volume;                   //音量   0-100% 默认:60
+//    uint8_t date_time_format;         //格式 bit0-1:日期格式 默认0:年月日 1:月日年 2:日月年 bit2:时间格式 0:24小时制 1:12小时制
+//    uint8_t bluetooth_sw;             //蓝牙开关
+//    uint8_t wifi_sw;                  //wifi开关
+//    AlarmTimeStruct_t alarm_time;     //闹钟时间
+//    Reminder_t reminder;              //提醒设置
+//    uint8_t water_tank_led_sw;        //水箱灯开关
+//    uint8_t reserved0[40];            //预留0
+//
+//    VentilationControl_t vtl_ctrl;    //通气控制参数   通气过程当控制参数更改时会存储一份控制参数，用于上位机统计
+//    VentilationSettings_t vtl_config; //通气配置参数
+//    BLEDeviceConfiguration_t ble_dev; //蓝牙配置
+//    VTMRWifiConfig_t wifi;            //wifi配置
+//    VTMServerInfo server;             //服务器配置
+//} Configuartion_t;
+
+typedef struct {
+    short Pressure;  /* 实时压           (0~40cmH2O)      , 单位 0.1cmH20       , e.g. 10 : 1cmH2O                [0 , 400  ] , 0.5Hz */
+    short IPAP;     /* 吸⽓压⼒        (0~40cmH2O)      , 单位 0.1cmH20       , e.g.  10 : 1cmH2O                [0 , 400  ] , 0.5Hz */
+    short EPAP;     /* 呼⽓压⼒        (0~40cmH2O)      , 单位 0.1cmH20       , e.g. 10 : 1cmH2O                [0 , 400  ] , 0.5Hz */
+    short VT;       /* 潮⽓量          (0~3000mL)        , 单位 1mL              , e.g. 10 : 10mL                   [0 , 3000 ] , 0.5Hz */
+    short MV;       /* 分钟通⽓量    (0~60L/min)      , 单位 0.1L/min      , e.g. 10 : 1L/min               [0 , 600  ] , 0.5Hz */
+    short Leak;     /* 漏⽓量          (0~120L/min)    , 单位 0.1L/min      , e.g. 10 : 1L/min               [0 , 1200 ] , 0.5Hz */
+    short RR;       /* 呼吸率           (0~60)               , 单位 1bpm             , e.g. 10 : 10bpm                 [0 , 60    ] , 0.5Hz */
+    short Ti;       /* 吸⽓时间       (0.1-4s)           , 单位 0.1s           , e.g. 10 : 1s                    [1 , 40    ] , 0.5Hz */
+    short IE;      /* 呼吸⽐         (1:50.0-3.0:1) , 单位 0.0001          , e.g. 10 : 1:49.75             [0 , 30000], 0.5Hz */
+    short SpO2;     /* ⾎氧              (70-100%)         , 单位 1%                , e.g. 10 : 10%                     [70 , 100  ] , 1Hz */
+    short PR;       /* 脉率              (30-250bpm)      , 单位 1bpm             , e.g.  10 : 10bpm                 [30 , 250  ] , 1Hz */
+    short HR;       /* ⼼率              (30-250bpm)      , 单位 1bpm             , e.g.  10 : 10bpm                 [30 , 250  ] , 1Hz */
+    short reserved[8];
+} CG_BOXABLE VTMRMonitorData_t;
+
+typedef struct {
+    VTMScaleFileHead head;
+    int64_t t_num;
+    VTMRMonitorData_t *t_points;
+} CG_BOXABLE VTMRMonitorData;
+
+typedef struct {
+    int Spont; /* ⾃主呼吸占⽐ (0-100), 单位 1%, e.g. 10 : 10%   [0    , 100 ] */
+    /*
+     计算⽅式：通⽓期间发⽣的总次数/通⽓总使⽤⼩时数
+    AI=OAI+CAI
+    AHI=AI+HI=OAI+CAI+HI
+    次数值与指数值之间的换算为 : (x_count * 3600) / recording_time = x_index / hour , (x_index = [0 , 200]) 8
+     */
+    int AHI_Count;      /* 呼吸暂停低通⽓次数 */
+    int AI_Count;       /* 呼吸暂停次数 */
+    int HI_Count;       /* 低通⽓次数 */
+    int OAI_Count;      /* 阻塞⽓道呼吸暂停次数 */
+    int CAI_Count;      /* 中枢性呼吸暂停次数 */
+    int RERA_Count;     /* 呼吸努⼒相关性觉醒次数 */
+    int SNI_Count;      /* 鼾声次数 */
+    int PB;             /* 周期性呼吸次数 */
+    int take_off_count; // 摘下次数
+    int ll_time;        // ⼤漏⽓量时间
+    int reserved_1[1];
+} CG_BOXABLE VTMRStatisticsPara_t;
+
+typedef struct {
+    int total_second; /* 记录时⻓ , 单位 1s , e.g. 10 : 10s [0 , 136 year] */
+    int usage_days;   /* 使⽤设备的天数(0-365) */
+    int more_than_4h; /* 每天使⽤时间⼤于4⼩时的天数(0-365) */
+    int mean_second;   /* 平均每天的使⽤秒数(0-86400) , 分辨率1 */
+    /*单次通⽓参数*/
+    VTMRStatisticsPara_t once_para;
+    /*监测参数统计项*/
+    union {
+        int buf[20][5];
+        struct {
+            /* 以下指标5组值分别是：最⼩值、最⼤值、平均值、中位数、95%值 */
+            int Pressure[5];    /* 实时压            (0~40cmH2O)      , 单位 0.1cmH20      , e.g.  10  : 1cmH2O   [0 , 400 ] */
+            int IPAP[5];        /* 吸⽓压⼒          (0~40cmH2O)      , 单位 0.1cmH20       , e.g. 10 : 1cmH2O   [0 , 400 ] */
+            int EPAP[5];        /* 呼⽓压⼒          (0~40cmH2O)      , 单位 0.1cmH20       , e.g. 10 : 1cmH2O   [0 , 400 ] */
+            int VT[5];          /* 潮⽓量           (0~3000mL)       , 单位 1mL              , e.g. 10 : 10mL      [0 , 3000] */
+            int MV[5];          /* 分钟通⽓量        (0~60L/min)      , 单位 0.1L/min      , e.g. 10 : 1L/min   [0 , 600 ] */
+            int Leak[5];        /* 漏⽓量          (0~120L/min)      , 单位 0.1L/min       , e.g. 10 : 1L/min   [0 , 1200] */
+            int RR[5];          /* 呼吸率           (0~60)           , 单位 1bpm             , e.g. 10 : 10bpm     [0 , 60  ] */
+            int Ti[5];          /* 吸⽓时间         (0.1-4s)         , 单位 0.1s           , e.g. 10 : 1s         [1 , 40  ] */
+            int IE[5];          /* 呼吸⽐          (1:50.0-3.0:1)    , 单位 0.0001          , e.g. 10 : 1:49.75 [0 , 30000]*/
+            int SpO2[5];        /* ⾎氧           (70-100%)         , 单位 1%                , e.g.  10 : 10%        [70 , 100 ] */
+            int PR[5];          /* 脉率           (30-250bpm)       , 单位 1bpm             , e.g.  10 : 10bpm     [30 , 250 ] */
+            int HR[5];          /* ⼼率           (30-250bpm)       , 单位 1bpm             , e.g.  10 : 10bpm     [30 , 250 ] */
+            int reserved_3[8][5];
+        };
+    } item;
+} CG_BOXABLE VTMRStatistict_t;
+
+typedef struct {
+    VTMScaleFileHead head;
+    VTMRStatistict_t stat_t;
+} CG_BOXABLE VTMRStatistict;
+
+
+typedef struct {
+    u_char file_name[32];
+    u_int file_offset;
+} CG_BOXABLE VTMRReadFileStart;
+
+typedef struct {
+    u_int start_time;
+    u_char record_type;
+    char reserved[5];
+} CG_BOXABLE VTMRStatistictStart;
+
+typedef struct {
+    u_int measure_time;
+    u_int update_at;
+    char reserved[2];
+} CG_BOXABLE VTMRStatistict_e;
+
+typedef struct {
+    VTMRStatistictStart start;
+    u_short record_size;
+    VTMRStatistict_e *elements;
+} CG_BOXABLE VTMRStatistictsList;
+
 #pragma pack()
 
 

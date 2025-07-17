@@ -317,3 +317,24 @@
 - (void)baby_requestGesture;
 
 @end
+
+
+@interface VTMURATUtils (Ventilator)
+
+- (void)ventilator_scanWiFiList ;
+
+- (void)ventilator_syncConfigureWiFi:(VTMWiFiConfig)wifiConfig ;
+
+- (void)ventilator_requestWiFiConfiguration ;
+
+- (void)ventilator_requestLastestStatistics;
+
+- (void)ventilator_requestStatisticsList:(NSTimeInterval)interval;
+
+- (void)ventilator_prepareReadStatisticsFile:(NSString *_Nonnull)fileName;
+
+- (void)ventilator_readStatisticsFile:(u_int)offset;
+
+- (void)ventilator_endReadStaitsticsFile;
+
+@end

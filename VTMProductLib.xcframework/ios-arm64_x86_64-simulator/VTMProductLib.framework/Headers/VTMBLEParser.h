@@ -252,4 +252,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
+@interface VTMBLEParser (Ventilator)
+
+/// 解析监测参数文件
++ (VTMRMonitorData)ventilator_parseMonitorData:(NSData *)data;
+
+/// 解析每日统计文件
++ (VTMRStatistict)ventilator_parseStatistictData:(NSData *)data;
+
+
++ (VTMRStatistictsList)ventilator_parseStatisticsList:(NSData *)data;
+
+@end
+
 NS_ASSUME_NONNULL_END

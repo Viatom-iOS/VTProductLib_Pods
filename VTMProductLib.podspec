@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "VTMProductLib"
-  spec.version      = "1.4.4"
+  spec.version      = "1.5.0"
   spec.summary      = "Support Lepu's products."
 
   # This description is used to generate tags and improve search results.
@@ -135,4 +135,16 @@ Pod::Spec.new do |spec|
   # spec.dependency "JSONKit", "~> 1.4"
 
   spec.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+  
+  
+  spec.vendored_frameworks = "VTMProductLib.xcframework"
+  spec.public_header_files = "VTMProductLib.xcframework/ios-arm64/VTMProductLib.framework/Headers/*.h"
+  spec.source_files = "VTMProductLib.xcframework/**/Headers/*.h"
+  
+  spec.script_phase = {
+  :name => 'Remove duplicate headers',
+  :script => 'find "${PODS_ROOT}/VTMProductLib" -name "*.h" -type f -delete 2>/dev/null || true',
+  :execution_position => :before_compile
+  }
+  
 end
