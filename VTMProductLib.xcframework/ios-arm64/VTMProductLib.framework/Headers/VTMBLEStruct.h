@@ -419,7 +419,8 @@ VTMBPConfig {
     u_char reserved3;  // 运行状态
     u_char wifi_4g_switch;    // BP3 WiFi/4G开关,0:关1:开
     u_char unit;    //单位设置。bit0：（血压单位， 0：mmHg，1：KPa。1Kpa = 7.5mmHg）
-    u_char reserved4[4];    //预留
+    u_char language;
+    u_char reserved4[3];    //预留
 };
 typedef struct CG_BOXABLE VTMBPConfig VTMBPConfig;
 
