@@ -942,6 +942,51 @@ typedef  struct {
     unsigned char temp_reserved[1];     ///< 预留
 } CG_BOXABLE VTMER3RunParams;
 
+typedef  struct {
+    uint16_t hr;                    ///< 当前主机实时心率 bpm
+    uint16_t temperature;           ///< 体温 无效值0xFFFFe.g. 2500 temp = 25.0℃
+    uint8_t  SpO2;                  ///< 血氧        无效值0xFF
+    uint8_t  Oxi_Pi;                ///< 0- 200 e.g. 25 : PI = 2.5
+    uint16_t PulseRate;             ///< 脉率
+    uint16_t RespRate;              ///< 呼吸率
+    /*
+    sys_flag
+    位    描述
+    0-1    电池状态    0:正常使用 1:充电中 2:充满 3:低电量
+    2    心电导联线状态    0:未插入导联线  1:插入导联线
+    3-4    血氧状态    0:未接入血氧  1:血氧状态正常 2:血氧手指脱落 3:探头故障
+    5-6    体温状态    0:未接入体温  1:体温状态正常
+    7-8    测量状态    0:空闲 1:准备状态 2:正式测量状态
+    9-11    外部设备配置信息    正式测量状态中配置的设备类型(0:无设备 bit9:体温 bit10:血氧 bit11:呼吸率)
+    */
+    uint16_t sys_flag;
+    
+    uint8_t     percent;            ///< 电池电量 e.g.    100:100%
+    uint32_t    record_time;        ///< 已记录时长    单位:second//27
+    VTMER3UTCTime  start_time;         ///< 测量开始时间
+    VTMER3Cable  lead_mode;         ///< 导联类型  lead_mode_t
+    uint8_t     lead_sn[15];        ///< 一次性导联的sn
+    uint16_t    lead_state;         ///< 导联状态 bit0-11  I II III aVR aVL aVF V1 V2 V3 V4 V5 V6     (0:ON  1:OFF)
+    uint8_t     reserved[6];        ///< 预留
+    uint32_t first_index;           //数据第一个点，相对于起始点的编号
+    uint16_t sampling_num;          //采样点数
+} CG_BOXABLE VTMMSeriesRunParams;
+
+/// sys_flag
+typedef struct {
+    uint8_t batteryState;         ///< 电池状态    0:正常使用 1:充电中 2:充满 3:低电量
+    uint8_t ecgLeadState;        ///< 心电导联线状态    0:未插入导联线  1:插入导联线
+    uint8_t oxyState;       ///< 血氧状态    0:未接入血氧  1:血氧状态正常 2:血氧手指脱落 3:探头故障
+    uint8_t tempState;       ///< 体温状态    0:未接入体温  1:体温状态正常
+    uint8_t measureState;       ///< 测量状态    0:空闲 1:准备状态 2:正式测量状态
+    uint8_t configInfo;       ///< 正式测量状态中配置的设备类型(0:无设备 bit9:体温 bit10:血氧 bit11:呼吸率)
+} CG_BOXABLE VTMMSeriesFlag;
+
+typedef struct {
+    uint32_t index; 
+} CG_BOXABLE VTMMSeriesRunParams_Index;
+
+
 /// @brief er3. RealTimeWavefrom
 typedef struct {
     unsigned char wave_info;        ///< bit0~bit3：采样率 0：250HZ，1:125HZ，2:62.5HZ。 bit4~bit7 压缩类型 0：未压缩，1：Viatom 差分压缩
@@ -995,6 +1040,10 @@ typedef struct {
     u_short event_tag_type;     // 事件类型
     u_char reserved[10];        // 预留
 } CG_BOXABLE VTMEREventLog;
+
+
+
+
 
 // MARK: O2Ring II struct
 typedef struct {

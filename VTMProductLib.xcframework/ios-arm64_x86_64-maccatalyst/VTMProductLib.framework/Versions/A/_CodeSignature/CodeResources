@@ -6,50 +6,34 @@
 	<dict>
 		<key>Resources/Info.plist</key>
 		<data>
-		2uqy7OYiHnzNgInuFduKZA9EUBU=
+		x0TM99jP8q1c2W8NHmazABCKnuw=
 		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
 		<key>Headers/VTMBLEEnum.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			+wasaaWYo3gaxKIFOnCRTsi9lFo=
-			</data>
 			<key>hash2</key>
 			<data>
-			PKDw/TJQsllRMCC9F0bGXr3QPqRo5AGNlP4sGaLRo1o=
+			Clg4nUkVHpL7HSiom3kVQ+0cNkbMGfWXWkhLqbmuo0Y=
 			</data>
 		</dict>
 		<key>Headers/VTMBLEParser.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			BubsAtQwcmJQowPt6+z0Lb3/mUo=
-			</data>
 			<key>hash2</key>
 			<data>
-			tAyyIDbbf5j67FR001CySmaZwK7vB0gCd0cFBvW9Xg8=
+			qpNPF4xvjSIYjeBYX8a5/7lHBE7obAGN4FV8P8oPfpw=
 			</data>
 		</dict>
 		<key>Headers/VTMBLEStruct.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			Wy3R8ENV0VCXAyVtVhago/ZxeGA=
-			</data>
 			<key>hash2</key>
 			<data>
-			68ESQRW6QRWMKPcc5VBt9U4Eb1fpM+g4EYviqy37PCQ=
+			uADutGebFSWqp+zivoIDmIT6MuTMDOS/lX/poLwvnFQ=
 			</data>
 		</dict>
 		<key>Headers/VTMCalibrate.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			/+68kAiPL3UkxwjkbnCf0iqJneg=
-			</data>
 			<key>hash2</key>
 			<data>
 			W36nF5HXjNJ9pasRP/pgxPh60WXHDAMMr4Xd6JviS4c=
@@ -57,10 +41,6 @@
 		</dict>
 		<key>Headers/VTMFilter.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			CxdpXbMBuDwINzLrXgSh4s2Cbe0=
-			</data>
 			<key>hash2</key>
 			<data>
 			OTf92NmEeFUZUG3UuNKToPIHl4HjU8187UyZ/AywHKY=
@@ -68,10 +48,6 @@
 		</dict>
 		<key>Headers/VTMProductLib.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			pn5Icd3x8eCIubtIn+VtH+NtHsw=
-			</data>
 			<key>hash2</key>
 			<data>
 			SCeW68AprI9dZiSCFtJGLr93y8qzBSdX4IgAy8Z79+M=
@@ -79,21 +55,13 @@
 		</dict>
 		<key>Headers/VTMURATUtils.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			0KoLx4LjKJDJyA9+LXH5XDMy8uQ=
-			</data>
 			<key>hash2</key>
 			<data>
-			S8ihRIuOSUpqkXULGlzH/n+TY0XzHWs7r38vT8vA9uk=
+			Cll0LIC3GM0jr9TDl6fpU/0o0okCTNPv6Bo39STuRRI=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			laDlx2X5O3dML0mKMqalcW0si68=
-			</data>
 			<key>hash2</key>
 			<data>
 			m8zT5zRdImi4XvtTp/ACX807CXsI549gnVR99/l9tzY=
@@ -101,13 +69,9 @@
 		</dict>
 		<key>Resources/Info.plist</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			2uqy7OYiHnzNgInuFduKZA9EUBU=
-			</data>
 			<key>hash2</key>
 			<data>
-			MLOKxQ8uoGbnUWak4GdJI2JYsmQO45WtxIJ0GtFpCS0=
+			iDJvA1kqqS7K3WUpVr2rq1adh69I4KvSFRdBZEwj/m0=
 			</data>
 		</dict>
 	</dict>

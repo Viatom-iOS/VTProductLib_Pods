@@ -80,11 +80,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (VTMER2Config)parseER2Config:(NSData *)data;
 
-//MARK: - ER3
+//MARK: - ER3/M series
 
 + (VTMER3Config)parseER3Config:(NSData *)data;
 
 + (VTMER3RealTimeData)parseER3RealTimeData:(NSData *)data;
+
++ (VTMMSeriesRunParams)parseMSeriesRunParams:(NSData *)data;
+
++ (VTMMSeriesFlag)parseMSeiriesSysFlag:(VTMMSeriesRunParams)runParams;
 
 + (CGFloat)er3MvFromShort:(short)n;
 
@@ -114,7 +118,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - waveData: 波形数据
 ///   - cable: 线缆类型
 ///   - state: 电极状态
-+ (NSArray<NSArray *> *)parseER3RealWaveData:(NSData *)waveData withCable:(VTMER3Cable)cable andState:(uint16_t)state;
++ (NSArray<NSArray *> *)parseER3RealWaveData:(NSData *)waveData withCable:(VTMER3Cable)cable andState:(VTMER3LeadState)state;
 
 
 /// 电极脱落状态 -> 导联信号状态

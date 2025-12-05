@@ -137,6 +137,8 @@
 /// @brief factory reset
 - (void)factoryReset;
 
+///  A few devices support this feature
+- (void)openupEncryptWithToken:(NSString * _Nonnull)token secretKey:(NSString * _Nonnull)key;
 
 #pragma mark ----- Now supported BP2 Pro & O2Ring S  ------
 
@@ -249,13 +251,16 @@
 
 - (void)syncER3Config:(VTMER3Config)config;
 
-/// @brief 请求ER3实时数据
+/// @brief Lepod Pro请求实时数据
 - (void)requestER3ECGRealData;
 
-/// @brief 退出测量
+/// @brief M系列ER3
+- (void)requestMSeriesRunParamsWithIndex:(uint32_t)index;
+
+/// @brief 退出测量 M系列不支持
 - (void)exitER3MeasurementMode;
 
-/// @brief 开启测量
+/// @brief 开启测量 M系列不支持
 - (void)startER3MeasurementMode;
 
 /// @brief 获取配置参数

@@ -69,7 +69,8 @@ typedef enum : u_char {
     VTMBLECmdGetUserList = 0xF9,
     VTMBLECmdEnterDFU = 0xFA,
     
-    VTMBLECmdSyncTimeZone = 0xC0            // 同步时间时区
+    VTMBLECmdSyncTimeZone = 0xC0,            // 同步时间时区
+    VTMBLECmdOpenupEncryption = 0xFF,        // 请求加密
 } VTMBLECmd;
 
 typedef enum : u_char {
