@@ -23,6 +23,7 @@ typedef enum : u_char {
 
 typedef enum : u_char {
     VTMBLEHeaderDefault = 0xA5,
+    VTMBLEHeaderWOxiIDefault = 0xAA
 } VTMBLEHeader;
 
 typedef enum : u_char {
@@ -125,12 +126,18 @@ typedef enum : u_char {
 typedef enum : u_char {
     VTMWOxiCmdGetConfig = 0x00,
     VTMWOxiCmdSetConfig = 0x01,
+    VTMWOxiCmdGetRunParams = 0x02,
     VTMWOxiCmdGetRealData = 0x04,
     VTMWOxiCmdGetRawdata = 0x05,
     VTMWOxiCmdGetPPGList = 0x06,
     VTMWOxiCmdGetPPGStart = 0x07,
     VTMWOxiCmdGetPPGContent = 0x08,
     VTMWOxiCmdGetPPGEnd = 0x09,
+    VTMWOxiCmdPushCtrl = 0x10,
+    VTMWOxiCmdPushRunParams = 0x11,
+    VTMWOxiCmdPushRealWave = 0x12,
+    VTMWOxiCmdPushRawData = 0x13,
+//    VTMWOxiCmdPush
     VTMWOxiCmdSetUTCTime = 0xC0,
 } VTMWOxiCmd;
 
@@ -147,6 +154,16 @@ typedef enum: NSUInteger {
     VTMWOxiSetParamsDisplayMode,           // 显示模式
     VTMWOxiSetParamsBrightness,            // 屏幕亮度 0：息屏 1：低亮屏 2：中 3：高
     VTMWOxiSetParamsInterval,              // 存储间隔
+    VTMWOxiSetParamsTimeZoom,              // 时区 (暂时不用)
+    VTMWOxiSetParamsPushCtrl,              // 算法开关控制
+    VTMWOxiSetParamsAlgAvgtime,            // 算法平均时间
+    VTMWOxiSetParamsCountdownTime,         // 结束测量倒计时时间
+    VTMWOxiSetParamsHandedness,            // 左右手利手模式
+    VTMWOxiSetParamsMotionSw = 20,         // 体动提醒开关
+    VTMWOxiSetParamsMotionThr,             // 体动阈值
+    VTMWOxiSetParamsInvalidSignalSw,       // 无效信号提醒开关
+    VTMWOxiSetParamsInvalidSignalThr,      // 无效信号提醒阈值
+    VTMWOxiSetParamsSpo2FuncSw             // 血氧功能开关
 } VTMWOxiSetParams;
 
 typedef enum: NSUInteger {

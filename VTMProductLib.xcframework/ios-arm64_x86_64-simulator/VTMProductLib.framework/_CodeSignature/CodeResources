@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/VTMBLEEnum.h</key>
 		<data>
-		0zAETBjl9905w5whk5qtzcRUpcY=
+		Qx7cxcO1yl4QJuIzCGlPWiPwD78=
 		</data>
 		<key>Headers/VTMBLEParser.h</key>
 		<data>
@@ -14,7 +14,7 @@
 		</data>
 		<key>Headers/VTMBLEStruct.h</key>
 		<data>
-		tAd6veSSHkIU07o+RnfGgiXtLek=
+		zQwGA/24F5kiujp3MYsP36Ps4bI=
 		</data>
 		<key>Headers/VTMCalibrate.h</key>
 		<data>
@@ -26,15 +26,43 @@
 		</data>
 		<key>Headers/VTMProductLib.h</key>
 		<data>
-		pn5Icd3x8eCIubtIn+VtH+NtHsw=
+		A4KCrsR2jO+flxZVZW521msr4v0=
 		</data>
 		<key>Headers/VTMURATUtils.h</key>
 		<data>
-		hCBmRXf7Yxf95A+c1MRYq+H+q44=
+		Qeibyvh4/EKKLaxKRW/Gi7UJyWE=
+		</data>
+		<key>Headers/VTO2Communicate.h</key>
+		<data>
+		OYw2mAmBK9050KY3EvgXcr/j5Fk=
+		</data>
+		<key>Headers/VTO2Def.h</key>
+		<data>
+		0AkE8me3u52KZi/Hz/3/kHHA3wQ=
+		</data>
+		<key>Headers/VTO2Info.h</key>
+		<data>
+		00MgjkFVG6s+EdhVNnC5x+T2MeQ=
+		</data>
+		<key>Headers/VTO2Object.h</key>
+		<data>
+		LmedFaWVjITzi6t7RfFM/aQXPS4=
+		</data>
+		<key>Headers/VTO2Parser.h</key>
+		<data>
+		LqO8CW80tiZ3BBT4oH+WDCZglbY=
+		</data>
+		<key>Headers/VTO2WaveObject.h</key>
+		<data>
+		W3CwqfHxA8hHt64eUs9B0ijdNa8=
+		</data>
+		<key>Headers/VTRealObject.h</key>
+		<data>
+		3oqPL0R+cI22f/RoVQK1cwA5cUg=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		9A9vajP2WJqdQNMs6BowsPmtNvs=
+		/+U11vTCasPQPylWPmrIcfMGf9g=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -47,7 +75,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Clg4nUkVHpL7HSiom3kVQ+0cNkbMGfWXWkhLqbmuo0Y=
+			SiNzB2JmB4XoXmq4tBN9xqtft70ipCkFyc9IZT8QZbc=
 			</data>
 		</dict>
 		<key>Headers/VTMBLEParser.h</key>
@@ -61,7 +89,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			uADutGebFSWqp+zivoIDmIT6MuTMDOS/lX/poLwvnFQ=
+			dfJ2DoEzbFn+TPuOtxvVvfQCDo87YGOopbZw8DH5970=
 			</data>
 		</dict>
 		<key>Headers/VTMCalibrate.h</key>
@@ -82,14 +110,63 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			SCeW68AprI9dZiSCFtJGLr93y8qzBSdX4IgAy8Z79+M=
+			vkGlrBk7xyaIf4L9xtQbKUYhecn/LofqcaogOcIN+10=
 			</data>
 		</dict>
 		<key>Headers/VTMURATUtils.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Cll0LIC3GM0jr9TDl6fpU/0o0okCTNPv6Bo39STuRRI=
+			ezV/8LhDswCXI6Puzlu/A840gIvLLaq6wgq1w4yqiiQ=
+			</data>
+		</dict>
+		<key>Headers/VTO2Communicate.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Yfmhlbpx2qpjvMUaP4BZaDH3reXS4naY9fkSjsCg0g8=
+			</data>
+		</dict>
+		<key>Headers/VTO2Def.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			bnotaOXMlnEl7r4LCsDPqHzxSigCtHh2y4QueSPe6aI=
+			</data>
+		</dict>
+		<key>Headers/VTO2Info.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			F1B/irkcZTkDQdFQS4AS1NUKi7S3XAQi1kDEZwaNPRA=
+			</data>
+		</dict>
+		<key>Headers/VTO2Object.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			W2d7+q2QCssmCW4guKz9cCv6Ix1v4KvwBkbZSAdWHB8=
+			</data>
+		</dict>
+		<key>Headers/VTO2Parser.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			mazkc+CTDB3cJMcpEdf2bnuTrJg8SCKZT6mAsv+MisI=
+			</data>
+		</dict>
+		<key>Headers/VTO2WaveObject.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			rt38UOL/SuQ88gtCHGPDKwal8moOUWmZ/nZuexPvBMA=
+			</data>
+		</dict>
+		<key>Headers/VTRealObject.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			FzobFbcd4uN3QMM34SOl2mhZ2QDuQ0M7c9EUle7Dk98=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

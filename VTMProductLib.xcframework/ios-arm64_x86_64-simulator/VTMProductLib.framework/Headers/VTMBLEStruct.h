@@ -13,6 +13,17 @@
 
 // 对齐方式 首字节对齐
 #pragma pack(1)
+typedef struct{
+    u_short addr;
+    uint8_t pair;                //配对字段    0x00:非配对阶段 0x01:配对阶段
+    uint8_t uuid0_version:4;    //老UUID协议版本 0不存在 1:老协议 2:新协议
+    uint8_t uuid0_enc_level:4;    //老UUID通信加密等级    0非加密 1:加密和非加密 2:仅支持加密
+    uint8_t uuid1_version:4;    //新UUID协议版本 0不存在 1:老协议 2:新协议
+    uint8_t uuid1_enc_level:4;    //新UUID通信加密等级    0非加密 1:加密和非加密 2:仅支持加密
+    uint8_t connect_state;        //bit0:app禁止连接状态 bit1:盒子/涉嫌头禁止连接状态 仅BabyO2S2和BabyO2S3使用
+} UserAdvData_t;
+
+
 /// @brief start update firmware . EqulTo  StartFirmwareUpdate.
 struct
 VTMStartFirmwareUpdate {
@@ -111,7 +122,8 @@ VTMDeviceInfo {
     u_int  fw_version;              // firmware version           e.g. 0x010100 : V1.1.0
     u_int  bl_version;              // bootloader version         e.g. 0x010100 : V1.1.0
     u_char branch_code[8];          // brach code            e.g. “40020000” : Ezcardio Plus
-    u_char reserved0[3];            // reserved
+    u_char fs_version;
+    u_char reserved0[2];            // reserved
     u_short device_type;            // device type             e.g. 0x8611: sphygmometer
     u_short protocol_version;       // protocol version    e.g.0x0100:V1.0
     u_char cur_time[7];             // date                     e.g.0xE1070301090000:2017-03-01 09:00:00
@@ -1057,7 +1069,16 @@ typedef struct {
     u_char brightness;      // 屏幕亮度    0：低 1：中 2：高
     u_char interval;        // 存储间隔 单位S
     u_char timezone;        // 时区 默认80
-    u_char reserved[30];    // 预留
+    u_char push_ctrl;       // 主动推送开关
+    u_char alg_avg_time;    //
+    u_char countdown_time;  //
+    u_char lr_mode;         //
+    u_char motion_switch;   //
+    u_char motion_thr;      //
+    u_char invalid_signal_switch;   //
+    u_short invalid_signal_thr;     //
+    u_char func_switch;     //
+    u_char reserved[20];    // 预留
 } CG_BOXABLE VTMWOxiInfo;
 
 /**
@@ -1113,8 +1134,9 @@ typedef struct {
  } IntervalSetting
  */
 typedef struct {
-    u_char val;             // 参考文档
-    char reserved[3];
+//    u_char val;
+//    char reserved[3];
+    u_int val;      // 参考文档
 } CG_BOXABLE VTMOxiParam;
 
 
@@ -1182,6 +1204,117 @@ typedef struct {
     u_char average_pr;
 } CG_BOXABLE VTMWOxiResult;
 
+// MARK: BBSMS3
+
+typedef struct {
+    uint8_t quiet;
+    uint8_t state;
+    uint8_t reserved[10];
+} VTO2SleepState;
+
+typedef struct {
+    uint32_t start_timestamp;       // 首次入睡时间，若未入睡为0
+    uint32_t end_timestamp;         // 最后一次出睡时间，睡眠时为当前时间
+    uint32_t awake_duration;        // 清醒时长
+    uint32_t deep_duration;         // 深睡时长
+    uint32_t light_duration;        // 浅睡时长
+    uint32_t total_duration;        // 总睡眠时长
+    uint8_t wake_count;             // 清醒次数，大于250不再做统计
+    uint8_t reserved[15];
+} VTO2SleepReport;
+
+typedef struct {
+    VTO2SleepReport report;         // 当前报告
+    VTO2SleepState  state;          // 当前状态
+} VTO2SleepRTInfo;
+
+typedef struct {
+    uint32_t record_time;           // 已记录时长    单位:second    暂无使用
+    uint8_t run_status;             // 运行状态 0:准备阶段 1:测量准备阶段 2:测量中 3:测量结束
+    uint8_t sensor_state;           // 传感器状态 0:脱落或者拔出或者故障 1:正常测量状态
+    uint8_t spo2;
+    uint8_t pi;                     // PI值*10 e.g.  15 : PI = 1.5
+    uint16_t pr;
+    uint8_t flag;                   // 标志参数 bit0:脉搏音标志
+    uint8_t motion;                 // 体动
+    uint8_t battery_state;          // 电池状态 e.g.   0:正常使用 1:充电中 2:充满 3:低电量
+    uint8_t battery_percent;        // 电池状态 e.g.    电池电量百分比
+    uint8_t alram_state;
+    uint8_t reserved[13];
+    VTO2SleepRTInfo sleep_info;
+} VTO2SleepRunParams;
+
+typedef struct {
+    unsigned char file_version;        //文件版本 e.g.  0x01 :  V1
+    unsigned char operation_mode;            //血氧数据文件 0x03
+    unsigned short year;
+    unsigned char month;
+    unsigned char day;
+    unsigned char hour;
+    unsigned char minute;
+    unsigned char second;
+    unsigned int size;
+} VTO2FileHead_t;
+
+typedef struct {
+    unsigned char spo2;
+    unsigned char pr;
+    unsigned char motion:6;            //16 = 1g
+    unsigned char remind_hr:1;
+    unsigned char remind_spo2:1;
+    unsigned char quiet:4;        //安静值
+    unsigned char sleep_state:4;    //睡眠状态
+} VTO2SleepPointData_t;
+
+
+typedef struct {        //16字节
+    unsigned short record_time;             // 记录时长
+    unsigned short asleep_time;                //睡着时间
+    unsigned char average_spo2;                //平均血氧
+    unsigned char lowest_spo2;                //最低血氧
+    unsigned char _3percent_drops;            //3%drops
+    unsigned char _4percent_drops;            //4%drops
+    unsigned short _90percent_duration;        // 90%持续时间
+    unsigned char _90percent_drops;            // 90%跌落次数
+    unsigned char  T90;                        //T90        <90%占总时间百分比
+    unsigned char O2_score;                //O2得分
+    unsigned int step_counter;                //计步结果
+    unsigned short average_hr;                //平均心率
+ } VTO2SleepAnalysisResult;
+
+typedef struct {        // 8个字节
+    VTO2SleepAnalysisResult result; // 16 bytes
+    unsigned char reserved[8];
+    VTO2SleepReport sleep; // 40 bytes
+} VTO2SleepFileTail_t;
+
+
+typedef struct {        //16字节
+    unsigned short asleep_time;                //睡着时间
+    unsigned char average_spo2;                //平均血氧
+    unsigned char lowest_spo2;                //最低血氧
+    unsigned char _3percent_drops;            //3%drops
+    unsigned char _4percent_drops;            //4%drops
+    unsigned char  T90;                        //T90        <90%占总时间百分比
+    unsigned short _90percent_duration;        // 90%持续时间
+    unsigned char _90percent_drops;            // 90%跌落次数
+    unsigned char O2_score;                //O2得分
+    unsigned int step_counter;                //计步结果
+    unsigned char average_hr;                //平均心率
+ } VTMS3SleepAnalysisResult;
+
+typedef struct {
+    unsigned int check_sum;            //文件头部+数据点+分析结果和校验
+    unsigned int magic;                    //文件标志 固定值为0xDA5A1248
+    unsigned int timestamp;                //测量时间时间戳 e.g.  0:1970.01.01 00:00:00
+    unsigned int records ;                //记录点数
+    unsigned char interval;                //存储间隔 单位s
+    unsigned char channel_type;            //通道类型 O2Ring S固定为CHANNEL_SPO2_PR_MOTION
+    unsigned char channel_bytes;        //单个通道字节数 固定1
+    unsigned char reserved[13];            //预留
+    VTMS3SleepAnalysisResult result; // 16 bytes
+    VTO2SleepReport sleep; // 40 bytes
+} CG_BOXABLE VTMS3FileTail_t;
 
 
 // MARK: PF-10
@@ -1597,7 +1730,7 @@ typedef struct {
     VTMRStatisticsPara_t once_para;
     /*监测参数统计项*/
     union {
-        int buf[20][5];
+        int buf[19][5];
         struct {
             /* 以下指标5组值分别是：最⼩值、最⼤值、平均值、中位数、95%值 */
             int Pressure[5];    /* 实时压            (0~40cmH2O)      , 单位 0.1cmH20      , e.g.  10  : 1cmH2O   [0 , 400 ] */
@@ -1612,9 +1745,15 @@ typedef struct {
             int SpO2[5];        /* ⾎氧           (70-100%)         , 单位 1%                , e.g.  10 : 10%        [70 , 100 ] */
             int PR[5];          /* 脉率           (30-250bpm)       , 单位 1bpm             , e.g.  10 : 10bpm     [30 , 250 ] */
             int HR[5];          /* ⼼率           (30-250bpm)       , 单位 1bpm             , e.g.  10 : 10bpm     [30 , 250 ] */
-            int reserved_3[8][5];
+            int reserved_3[7][5];
         };
     } item;
+    // when device's software >= v1.2.14.0 is valid.
+    u_char reserved_4[8];
+    u_short odi3_count;
+    u_short odi4_count;
+    u_int sleep_times;
+    u_int _90percent_times;
 } CG_BOXABLE VTMRStatistict_t;
 
 typedef struct {

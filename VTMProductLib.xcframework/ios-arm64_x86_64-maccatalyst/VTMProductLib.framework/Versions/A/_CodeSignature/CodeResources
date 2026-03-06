@@ -6,7 +6,7 @@
 	<dict>
 		<key>Resources/Info.plist</key>
 		<data>
-		x0TM99jP8q1c2W8NHmazABCKnuw=
+		yp6iRESSMS1uVelVbWddf/4I2tE=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -15,7 +15,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Clg4nUkVHpL7HSiom3kVQ+0cNkbMGfWXWkhLqbmuo0Y=
+			SiNzB2JmB4XoXmq4tBN9xqtft70ipCkFyc9IZT8QZbc=
 			</data>
 		</dict>
 		<key>Headers/VTMBLEParser.h</key>
@@ -29,7 +29,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			uADutGebFSWqp+zivoIDmIT6MuTMDOS/lX/poLwvnFQ=
+			dfJ2DoEzbFn+TPuOtxvVvfQCDo87YGOopbZw8DH5970=
 			</data>
 		</dict>
 		<key>Headers/VTMCalibrate.h</key>
@@ -50,14 +50,63 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			SCeW68AprI9dZiSCFtJGLr93y8qzBSdX4IgAy8Z79+M=
+			vkGlrBk7xyaIf4L9xtQbKUYhecn/LofqcaogOcIN+10=
 			</data>
 		</dict>
 		<key>Headers/VTMURATUtils.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Cll0LIC3GM0jr9TDl6fpU/0o0okCTNPv6Bo39STuRRI=
+			ezV/8LhDswCXI6Puzlu/A840gIvLLaq6wgq1w4yqiiQ=
+			</data>
+		</dict>
+		<key>Headers/VTO2Communicate.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Yfmhlbpx2qpjvMUaP4BZaDH3reXS4naY9fkSjsCg0g8=
+			</data>
+		</dict>
+		<key>Headers/VTO2Def.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			bnotaOXMlnEl7r4LCsDPqHzxSigCtHh2y4QueSPe6aI=
+			</data>
+		</dict>
+		<key>Headers/VTO2Info.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			F1B/irkcZTkDQdFQS4AS1NUKi7S3XAQi1kDEZwaNPRA=
+			</data>
+		</dict>
+		<key>Headers/VTO2Object.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			W2d7+q2QCssmCW4guKz9cCv6Ix1v4KvwBkbZSAdWHB8=
+			</data>
+		</dict>
+		<key>Headers/VTO2Parser.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			mazkc+CTDB3cJMcpEdf2bnuTrJg8SCKZT6mAsv+MisI=
+			</data>
+		</dict>
+		<key>Headers/VTO2WaveObject.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			rt38UOL/SuQ88gtCHGPDKwal8moOUWmZ/nZuexPvBMA=
+			</data>
+		</dict>
+		<key>Headers/VTRealObject.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			FzobFbcd4uN3QMM34SOl2mhZ2QDuQ0M7c9EUle7Dk98=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -71,7 +120,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			iDJvA1kqqS7K3WUpVr2rq1adh69I4KvSFRdBZEwj/m0=
+			klkFmqMvfGk4D5Ovr7swPZDAxa4iRJbObbO1UwOaGBY=
 			</data>
 		</dict>
 	</dict>

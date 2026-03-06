@@ -16,10 +16,11 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "VTMBLEStruct.h"
 #import "VTMBLEEnum.h"
+#import "VTMBLEStruct.h"
 
-@class VTMURATUtils;
+
+@class VTMURATUtils, VTMBLEDevice;
 
 @protocol VTMURATDeviceExtension <NSObject>
 
@@ -82,13 +83,14 @@
 
 @end
 
+
 @interface VTMURATUtils : NSObject
 
 /// @brief manage communicate.
-@property (nonatomic, assign) id<VTMURATUtilsDelegate> _Nullable delegate;
+@property (nonatomic, weak) id<VTMURATUtilsDelegate> _Nullable delegate;
 
 /// @brief manage discover services and characteristics.
-@property (nonatomic, assign) id <VTMURATDeviceDelegate> _Nullable deviceDelegate;
+@property (nonatomic, weak) id <VTMURATDeviceDelegate> _Nullable deviceDelegate;
 
 /// @brief extension device
 @property (nonatomic, weak) id<VTMURATDeviceExtension> _Nullable extension;
@@ -99,6 +101,8 @@
 /// @brief notify device RSSI
 @property (nonatomic) BOOL notifyDeviceRSSI;
 
+/// @brief advertisementData，  setting it before setting peripheral.  also can use ``` setPeripheral:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary * _Nullable)advertisementData```
+@property (nonatomic, copy) NSDictionary * _Nullable advertisementData;
 /// @brief connected peripheral.
 @property (nonatomic, strong) CBPeripheral * _Nonnull peripheral;
 
@@ -109,6 +113,11 @@
 
 /// @brief The key of the wearable oximeter
 @property (nonatomic, copy) NSString * _Nullable wearablePPGKey;
+
+@property (nonatomic, strong, readonly) VTMBLEDevice * _Nullable bleDevice;
+
+
+- (void)setPeripheral:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary * _Nullable)advertisementData;
 
 /// @brief request device's information.
 - (void)requestDeviceInfo;
@@ -279,6 +288,8 @@
 
 - (void)woxi_syncConfigParam:(VTMOxiParamsOption)param;
 
+- (void)woxi_requestWOxiRunParams;
+
 - (void)woxi_requestWOxiRealData;
 
 - (void)woxi_requestWOxiPPGData:(VTMWOxiRawSampleInfo)info;
@@ -290,6 +301,8 @@
 - (void)woxi_readPPGFile:(u_int)offset;
 
 - (void)woxi_endReadPPGFile;
+
+- (void)observeParameters:(BOOL)onParam waveform:(BOOL)onWave rawdata:(BOOL)onRaw accdata:(BOOL)onACC;
 
 @end
 

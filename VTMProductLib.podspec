@@ -10,24 +10,21 @@ Pod::Spec.new do |spec|
 
 
   spec.name         = "VTMProductLib"
-  spec.version      = "1.5.3"
+  spec.version      = "1.5.4"
   spec.summary      = "Support Lepu's products."
-  spec.homepage     = "https://github.com/Viatom-iOS/VTProductLib_Pods"
 
   spec.description  = <<-DESC
                   Support communication between Lepu's products and iOS devices.
                    DESC
 
-
+  spec.homepage     = "https://github.com/Viatom-iOS/VTProductLib_Pods"
   spec.license      = { :type => "MIT", :file => "LICENSE" }
-
-  spec.author             = { "yanbo" => "yanbo@lepucloud.com", "yangweichao" => "yangweichao@lepucloud.com"}
-
+  spec.author       = { "yangweichao" => "yangweichao@lepucloud.com"}
+  spec.source       = {
+        :git => "https://github.com/Viatom-iOS/VTProductLib_Pods.git",
+        :tag => spec.version
+    }
   spec.ios.deployment_target = "11.0"
-
-
-  spec.source       = { :git => "https://github.com/Viatom-iOS/VTProductLib_Pods.git", :tag => spec.version }
-
 
   spec.vendored_frameworks = "VTMProductLib.xcframework"
   spec.libraries = 'c++', 'stdc++'
@@ -37,6 +34,5 @@ Pod::Spec.new do |spec|
 
   spec.public_header_files = "VTMProductLib.xcframework/ios-arm64/VTMProductLib.framework/Headers/*.h"
   spec.source_files = "VTMProductLib.xcframework/**/Headers/*.h"
-
   
 end
