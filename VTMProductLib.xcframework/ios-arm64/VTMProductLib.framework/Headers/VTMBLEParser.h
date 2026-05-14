@@ -10,6 +10,20 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// @brief Free helpers for structs that own heap memory.
+void VTMFreeRealTimeWF(VTMRealTimeWF * _Nullable wf);
+void VTMFreeRealTimeData(VTMRealTimeData * _Nullable data);
+void VTMFreeScaleRealData(VTMScaleRealData * _Nullable data);
+void VTMFreeBPRealTimeWaveform(VTMBPRealTimeWaveform * _Nullable wf);
+void VTMFreeBPRealTimeData(VTMBPRealTimeData * _Nullable rd);
+void VTMFreeBP3AlarmInfo(VTMBP3AlarmInfo * _Nullable info);
+void VTMFreeRMonitorData(VTMRMonitorData * _Nullable data);
+void VTMFreeRStatistictsList(VTMRStatistictsList * _Nullable list);
+void VTMFreeWiFiInfo(VTMWiFiInfo * _Nullable info);
+void VTMFreeServerInfo(VTMServerInfo * _Nullable info);
+void VTMFreeWiFiConfig(VTMWiFiConfig * _Nullable config);
+void VTMFreeWOxiRealData(VTMWOxiRealData * _Nullable data);
+
 /// @brief support for all viatom devices.
 @interface VTMBLEParser : NSObject
 

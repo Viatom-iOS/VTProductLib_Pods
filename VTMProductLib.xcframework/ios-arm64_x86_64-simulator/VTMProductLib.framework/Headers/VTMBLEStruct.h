@@ -216,7 +216,7 @@ typedef struct CG_BOXABLE VTMFileHead VTMFileHead;
 struct
 VTMRealTimeWF {
     u_short sampling_num;        //采样点数
-    short wave_data[300];        //原始数据
+    short *wave_data;        //  原始数据 数量为sampling_num个
 };
 typedef struct CG_BOXABLE VTMRealTimeWF VTMRealTimeWF;
 
@@ -533,13 +533,24 @@ VTMBPRealTimeWaveform {
 };
 typedef struct CG_BOXABLE VTMBPRealTimeWaveform VTMBPRealTimeWaveform;
 
+
+struct
+VTMBPPacket_t {
+    unsigned short index; //  1字节：索引
+    unsigned short sampling_num; // 1字节：采祥点数（N）
+    short *wave_data; // sampling_num x 2字芳
+};
+typedef struct CG_BOXABLE VTMBPPacket_t VTMBPPacket_t;
+
 /// @brief real-time data of bp. EqulTo BPRealTimeData
 struct
 VTMBPRealTimeData {
     VTMBPRunStatus run_status;
-    VTMBPRealTimeWaveform rt_wav; 
+    VTMBPRealTimeWaveform rt_wav;
+    VTMBPPacket_t *packet_t;
 };
 typedef struct CG_BOXABLE VTMBPRealTimeData VTMBPRealTimeData;
+
 
 #pragma mark --- BP2W
 
