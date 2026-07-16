@@ -111,8 +111,11 @@
 /// @brief The name of the file currently being read
 @property (nonatomic, copy, readonly) NSString * _Nullable curReadFileName;
 
-/// @brief The key of the wearable oximeter
+/// @brief The key of the wearable oximeter PPG feature.
 @property (nonatomic, copy) NSString * _Nullable wearablePPGKey;
+
+/// @brief The key of the device control feature.
+@property (nonatomic, copy) NSString * _Nullable controlKey;
 
 @property (nonatomic, strong, readonly) VTMBLEDevice * _Nullable bleDevice;
 
@@ -189,8 +192,7 @@
 /// @param config  ER1/VBeat配置信息
 - (void)syncER1NewConfig:(VTMER1NewConfig)config;
 
-/// @brief 退出测量
-- (void)exitER1MeasurementMode;
+- (void)er1_notifyMeasurementEnd;
 
 /// @brief 同步ER2/DuoEK配置信息
 /// @param config ER2/DuoEK配置信息
@@ -201,9 +203,7 @@
 
 @interface VTMURATUtils (BP)
 
-/// @brief 请求改变BP设备当前运行状态
-/// @param state   0 :- 进入血压测量 1 :-  进入心电测量 2 :- 进入历史 3 :- 进入开机 4 :- 关机
-- (void)requestChangeBPState:(u_char)state;
+- (void)bp_syncRunState:(u_char)state;
 
 /// @brief 请求BP2/BP2A/BP2W配置信息
 - (void)requestBPConfig;
@@ -266,17 +266,16 @@
 /// @brief M系列ER3
 - (void)requestMSeriesRunParamsWithIndex:(uint32_t)index;
 
-/// @brief 退出测量 M系列不支持
-- (void)exitER3MeasurementMode;
-
-/// @brief 开启测量 M系列不支持
-- (void)startER3MeasurementMode;
-
 /// @brief 获取配置参数
 - (void)getER3ConfigParams;
 
 /// @brief 设置配置参数
 - (void)setER3ConfigParams:(VTMER3ConfigParams)params;
+
+/** --------- private -------- */
+- (void)er3_notifyMeasurementEnd;
+
+- (void)er3_notifyMeasurementStart;
 
 @end
 
