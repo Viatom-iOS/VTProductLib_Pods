@@ -1,92 +1,941 @@
-# VTProductLib
+# VTMProductSDK
 
- #### 1. Quick Start
- First of all, because `VTMURATUtils` does not use the singleton mode, you need to subclass a singleton, and subsequent use can avoid some unnecessary problems.
- Then, set the property `peripheral` and `VTMURATDeviceDelegate` proxy of `VTMURATUtils`, the SDK will configure services and features, and return YES through the callback method `utilDeployCompletion:`, that is, normal communication can be performed.
- Finally, set `VTMURATUtilsDelegate` on the page that needs to be communicated, send the corresponding command to get the data, and return the corresponding structure through the `VTMBLEParser`.
+iOS BLE SDK for Lepu devices.
 
- #### 2. All methods the following is used communicate with product. Whether the product supports it, please refer to the protocol of the corresponding product.
+iOS 蓝牙通信 SDK，用于连接和操作乐普系列设备。
 
- ##### 2.1 Common
- - Request product info.
- ```
- - (void)requestDeviceInfo;
- ```
- 
-- Request product current battery info.
- ```
- - (void)requestBatteryInfo;
- ```
+---
 
- - Sync product time.
- ```
- - (void)syncTime:(NSDate * _Nullable)date;
- ```
+## Supported Devices / 支持的设备
 
- - Request file list from product.
- ```
- - (void)requestFilelist;
- ```
+| Category / 类别 | Devices / 设备型号 | DeviceType |
+|---|---|---|
+| ECG Monitor / 心电监护 | ER1, ER2, VBeat, DuoEK, DuoEKS | `VTMDeviceTypeECG` |
+| Blood Pressure / 血压计 | BP2, BP2A, BP2T, BP2W, BP2Pro, BP3 | `VTMDeviceTypeBP` |
+| Body Scale / 体脂秤 | S1 | `VTMDeviceTypeScale` |
+| 12-Lead ECG / 多导心电 | Lepod, Lepod Pro | `VTMDeviceTypeER3` |
+| M-Series ECG / M系列心电 | M12, M5 | `VTMDeviceTypeMSeries` |
+| Wearable Oximeter / 腕式血氧仪 | O2Ring S | `VTMDeviceTypeWOxi` |
+| Finger Clip Oximeter / 指夹血氧仪 | PF-10BWS | `VTMDeviceTypeFOxi` |
+| Baby Monitor / 婴儿监护 | BBSM P1 | `VTMDeviceTypeBabyPatch` |
+| Ventilator / 呼吸机 | R200 | `VTMDeviceTypeVentilator` |
 
- - Prepare to read file by the file name from file list.
- ```
- - (void)prepareReadFile:(NSString * _Nonnull)fileName;
- ```
+---
 
- - Read the next package file by the offset length of the file, and return a certain number of file bytes each time.
- ```
- - (void)readFile:(u_int)offset;
- ```
+## Requirements / 环境要求
 
- - End read file.
- ```
- - (void)endReadFile;
- ```
+- iOS 11.0+
+- Xcode 12+
+- Objective-C / Swift (bridging header)
 
- - Restore factory.
- ```
- - (void)factoryReset;
- ```
- ##### 2.2 ECG series related product specific command：
- - Request config info.
- ```
- - (void)requestECGConfig;
- ```
+---
 
- - Request real data.
- ```
- - (void)requestECGRealData;
- ```
+## Architecture Overview / 架构概述
 
- - Sync config info, Struct supported by the reference protocol.
- ```
- - (void)syncER1Config:(VTMER1Config)config;
- - (void)syncER2Config:(VTMER2Config)config;
- ```
- ##### 2.3 Blood pressure series related product specific command：
- - Request config info.
- ```
- - (void)requestBPConfig;
- ```
+```
+┌─────────────────────────────────────────────────────┐
+│                   Your App / 你的应用                  │
+├─────────────────────────────────────────────────────┤
+│  VTMURATUtils / VTO2Communicate  (Communication)    │
+│  ─────────────────────────────────────────────────  │
+│  VTMBLEParser / VTO2Parser       (Data Parsing)     │
+│  ─────────────────────────────────────────────────  │
+│  VTMFilter                       (Algorithm)        │
+└─────────────────────────────────────────────────────┘
+```
 
- - Set the config info.
- ```
- - (void)syncBPConfig:(VTMBPConfig)config;
- ```
+---
 
- - Request real data.
- ```
- - (void)requestBPRealData;
- ```
- ##### 2.4 S1 body scale series related product specific command:
- - Request real waveform.
- ```
- - (void)requestScaleRealWve;
- ```
+## Getting Started / 快速开始
 
- - Request real data.
- ```
- - (void)requestScaleRealData;
+### 1. Scan & Connect / 扫描与连接
 
- #### 3. Parse the data.
- Parse the data through `VTMBLEParser`, Reference protocol document and the corresponding structure in `VTMBLEStruct.h`.
+Use CoreBluetooth `CBCentralManager` to scan and connect peripherals. SDK does not manage scanning — you handle it yourself.
+
+使用 CoreBluetooth 的 `CBCentralManager` 扫描并连接外设。SDK 不负责扫描，需要你自行管理。
+
+### 2. Initialize Communication / 初始化通信
+
+**For most devices (ECG, BP, Scale, ER3, etc.):**
+
+**大多数设备（心电、血压、体脂秤、ER3 等）：**
+
+```objc
+#import "VTMURATUtils.h"
+
+// Create communication instance / 创建通信实例
+VTMURATUtils *urat = [[VTMURATUtils alloc] init];
+urat.delegate = self;           // Communication callbacks / 通信回调
+urat.deviceDelegate = self;     // Service discovery callbacks / 服务发现回调
+
+// Set authorization keys if needed (for PPG or extended features)
+// 如需使用 PPG 或扩展功能，设置授权 Key
+urat.wearablePPGKey = @"your-ppg-key";
+urat.controlKey = @"your-control-key";
+
+// Set connected peripheral with advertisement data / 设置已连接的外设（携带广播数据）
+// ⚠️ MUST use this method. Some encrypted devices cannot be identified correctly without advertisementData.
+// ⚠️ 必须使用此方法。部分加密设备如果不传 advertisementData 将无法正确识别。
+[urat setPeripheral:connectedPeripheral advertisementData:advData];
+```
+
+**For O2 series devices (O2Ring, BabyO2, etc.):**
+
+**O2 系列设备（O2Ring、BabyO2 等）：**
+
+```objc
+#import "VTO2Communicate.h"
+
+VTO2Communicate *o2Comm = [[VTO2Communicate alloc] init];
+o2Comm.o2Delegate = self;
+// ⚠️ Same as above, must use setPeripheral:advertisementData: / 同上，必须使用此方法
+[o2Comm setPeripheral:connectedPeripheral advertisementData:advData];
+```
+
+### 3. Wait for Deployment / 等待服务就绪
+
+After setting the peripheral, the SDK discovers BLE services and characteristics automatically. Wait for the delegate callback before sending commands.
+
+设置外设后，SDK 会自动发现 BLE 服务和特征值。收到代理回调后才能发送指令。
+
+```objc
+// VTMURATDeviceDelegate
+- (void)utilDeployCompletion:(VTMURATUtils *)util {
+    // Ready to communicate / 可以开始通信了
+    // For encrypted devices, call openupEncrypt first / 对于加密设备，先执行加密握手
+    [util openupEncryptWithToken:@"your-token" secretKey:@"your-secret-key"];
+}
+
+- (void)utilDeployFailed:(VTMURATUtils *)util {
+    // Service/Characteristic error / 服务或特征值错误
+}
+```
+
+---
+
+## Core API / 核心接口
+
+### VTMURATUtils — BLE Communication / 蓝牙通信
+
+The primary class for sending commands and receiving responses from devices.
+
+主要通信类，用于向设备发送指令和接收响应。
+
+#### Common Commands / 通用指令
+
+```objc
+// Get device info / 获取设备信息
+[urat requestDeviceInfo];
+
+// Get battery info / 获取电量信息
+[urat requestBatteryInfo];
+
+// Sync time / 同步时间
+[urat syncTime:[NSDate date]];
+
+// Sync time with timezone (BP2 Pro, O2Ring S) / 同步时间含时区
+[urat syncTimeZone:[NSDate date]];
+
+// Get file list / 获取文件列表
+[urat requestFilelist];
+
+// Read a file / 读取文件
+[urat prepareReadFile:@"20230101120000"];  // Open file / 打开文件
+[urat readFile:0];                         // Read from offset / 从偏移位置读取
+[urat endReadFile];                        // Close file / 关闭文件
+
+// Write a file (BP2 Pro) / 写入文件
+[urat writeFile:data withName:@"filename"];
+
+// Delete a file (BP2 Pro) / 删除文件
+[urat deleteFile:@"filename"];
+
+// Factory reset / 恢复出厂设置
+[urat factoryReset];
+```
+
+#### ECG Device Commands / 心电设备指令
+
+```objc
+// Get ECG config / 获取心电配置
+[urat requestECGConfig];
+
+// Get real-time ECG data / 获取实时心电数据
+[urat requestECGRealData];
+
+// Set ER1/VBeat config / 设置 ER1/VBeat 配置
+VTMER1Config config = {.vibeSw = 0x01, .hrTarget1 = 50, .hrTarget2 = 120};
+[urat syncER1Config:config];
+
+// Set ER2/DuoEK config / 设置 ER2/DuoEK 配置
+VTMER2Config config2 = {.ecgSwitch = 0x01};
+[urat syncER2Config:config2];
+```
+
+#### ER3/M-Series Commands / ER3/M系列指令
+
+```objc
+// Get ER3 config / 获取 ER3 配置
+[urat requestER3Config];
+
+// Set ER3 config / 设置 ER3 配置
+[urat syncER3Config:config];
+
+// Get real-time data / 获取实时数据
+[urat requestER3ECGRealData];
+
+// M-Series: get real-time data with index / M系列获取带索引的实时数据
+[urat requestMSeriesRunParamsWithIndex:0];
+
+// Get/Set config params / 获取/设置配置参数
+[urat getER3ConfigParams];
+VTMER3ConfigParams params = {.ISO = 0x00, .logo = 0x02};
+[urat setER3ConfigParams:params];
+```
+
+#### Blood Pressure Commands / 血压设备指令
+
+```objc
+// Get BP config / 获取血压配置
+[urat requestBPConfig];
+
+// Get real-time BP data / 获取实时血压数据
+[urat requestBPRealData];
+
+// Get real-time run status / 获取实时运行状态
+[urat bp_requestRealStatus];
+
+// Set BP config / 设置血压配置
+[urat syncBPConfig:bpConfig];
+
+// Wi-Fi operations (BP2W/BP3) / Wi-Fi 操作
+[urat requestScanWiFiList];
+[urat requestBPWiFiConfiguration];
+[urat requestBPConfigureWiFi:wifiConfig];
+
+// BP3 alarm / BP3 闹钟设置
+[urat bp3_requestAlarmInfo];
+[urat bp3_syncAlarmInfo:alarmInfo];
+```
+
+#### Scale Commands / 体脂秤指令
+
+```objc
+[urat requestScaleRunPrams];
+[urat requestScaleRealData];
+[urat requestScaleRealWve];
+```
+
+#### Wearable Oximeter Commands / 腕式血氧仪指令
+
+```objc
+[urat woxi_requestConfig];
+[urat woxi_requestWOxiRealData];
+[urat woxi_requestWOxiRunParams];
+[urat woxi_syncConfigParam:param];
+
+// PPG raw data / PPG 原始数据
+VTMWOxiRawSampleInfo info = {.marker = 0x01, .sample_rate = 0};
+[urat woxi_requestWOxiPPGData:info];
+
+// Push control / 推送控制
+[urat observeParameters:YES waveform:YES rawdata:NO accdata:NO];
+```
+
+#### Finger Clip Oximeter Commands / 指夹血氧仪指令
+
+```objc
+[urat foxi_requestConfig];
+[urat foxi_syncConfigParam:param];
+[urat foxi_makeInfoSend:YES];
+[urat foxi_makeWaveSend:YES];
+```
+
+#### Baby Monitor Commands / 婴儿监护指令
+
+```objc
+[urat baby_requestConfig];
+[urat baby_syncConfigParam:param];
+[urat baby_requestRunParams];
+[urat baby_requestGesture];
+```
+
+#### Ventilator Commands / 呼吸机指令
+
+```objc
+[urat ventilator_requestLastestStatistics];
+[urat ventilator_requestStatisticsList:timeInterval];
+
+// Read statistics file / 读取统计文件
+[urat ventilator_prepareReadStatisticsFile:@"filename"];
+[urat ventilator_readStatisticsFile:0];
+[urat ventilator_endReadStaitsticsFile];
+
+// Wi-Fi / Wi-Fi 配置
+[urat ventilator_scanWiFiList];
+[urat ventilator_requestWiFiConfiguration];
+[urat ventilator_syncConfigureWiFi:wifiConfig];
+```
+
+---
+
+---
+
+### VTMURATUtilsDelegate — Response Callbacks / 响应回调
+
+```objc
+- (void)util:(VTMURATUtils *)util
+    commandCompletion:(u_char)cmdType
+           deviceType:(VTMDeviceType)deviceType
+             response:(NSData *)response {
+
+    switch (deviceType) {
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // Common commands (all device types)
+        // 通用指令（所有设备类型）
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        default: {
+            switch (cmdType) {
+                case VTMBLECmdGetDeviceInfo: {
+                    VTMDeviceInfo info = [VTMBLEParser parseDeviceInfo:response];
+                    break;
+                }
+                case VTMBLECmdGetBattery: {
+                    VTMBatteryInfo battery = [VTMBLEParser parseBatteryInfo:response];
+                    break;
+                }
+                case VTMBLECmdGetFileList: {
+                    VTMFileList fileList = [VTMBLEParser parseFileList:response];
+                    break;
+                }
+                case VTMBLECmdStartRead: {
+                    VTMOpenFileReturn fileLen = [VTMBLEParser parseFileLength:response];
+                    // fileLen.file_size — total bytes / 文件总长度
+                    break;
+                }
+                case VTMBLECmdReadFile: {
+                    VTMFileData fileData = [VTMBLEParser parseFileData:response];
+                    // Append fileData.file_data to your buffer / 拼接到缓冲区
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // ECG devices (ER1, ER2, VBeat, DuoEK)
+        // 心电设备
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        case VTMDeviceTypeECG: {
+            switch (cmdType) {
+                case VTMECGCmdGetConfig: {
+                    // ER1/VBeat
+                    VTMER1Config er1Cfg = [VTMBLEParser parseER1Config:response];
+                    // or ER2/DuoEK
+                    // VTMER2Config er2Cfg = [VTMBLEParser parseER2Config:response];
+                    break;
+                }
+                case VTMECGCmdGetRealData: {
+                    VTMRealTimeData rtData = [VTMBLEParser parseRealTimeData:response];
+                    // rtData.run_para.hr — heart rate / 心率
+                    // rtData.waveform — waveform data / 波形数据
+                    VTMFreeRealTimeData(&rtData);
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // ER3 (Lepod Pro)
+        // 多导联心电
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        case VTMDeviceTypeER3: {
+            switch (cmdType) {
+                case VTMECGCmdGetConfig: {
+                    VTMER3Config er3Cfg = [VTMBLEParser parseER3Config:response];
+                    break;
+                }
+                case VTMER3ECGCmdGetRealData: {
+                    VTMER3RealTimeData rtData = [VTMBLEParser parseER3RealTimeData:response];
+                    // rtData.run_params — run parameters / 运行参数
+                    // rtData.waveform — compressed waveform / 压缩波形
+                    // Decompress waveform / 解压波形:
+                    // NSData *waveData = [VTMBLEParser parseER3WaveData:data withCable:rtData.run_params.cable_type];
+                    break;
+                }
+                case VTMER3ECGCmdGetConfigParams: {
+                    VTMER3ConfigParams params = [VTMBLEParser parseER3ConfigParams:response];
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // M-Series (M12, M5)
+        // M系列心电
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        case VTMDeviceTypeMSeries: {
+            switch (cmdType) {
+                case VTMMSeriesCmdGetRealData: {
+                    VTMMSeriesRunParams params = [VTMBLEParser parseMSeriesRunParams:response];
+                    VTMMSeriesFlag flag = [VTMBLEParser parseMSeiriesSysFlag:params];
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // Blood Pressure (BP2, BP2A, BP2W, BP2Pro, BP3)
+        // 血压设备
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        case VTMDeviceTypeBP: {
+            switch (cmdType) {
+                case VTMBPCmdGetConfig: {
+                    VTMBPConfig bpCfg = [VTMBLEParser parseBPConfig:response];
+                    break;
+                }
+                case VTMBPCmdGetRealData: {
+                    VTMBPRealTimeData bpData = [VTMBLEParser parseBPRealTimeData:response];
+                    // bpData.run_status.status — current status / 当前状态 (VTMBPStatus)
+                    // bpData.rt_wav — real-time waveform / 实时波形
+                    VTMFreeBPRealTimeData(&bpData);
+                    break;
+                }
+                case VTMBPCmdGetRealStatus: {
+                    VTMBPRunStatus status = [VTMBLEParser parseBPRealTimeStatus:response];
+                    break;
+                }
+                case VTMBPCmdScanWiFiList: {
+                    NSArray *wifiList = [VTMBLEParser parseWiFiList:response];
+                    break;
+                }
+                case VTMBPCmdGetWiFiConfig: {
+                    VTMWiFiConfig wifiCfg = [VTMBLEParser parseWiFiConfig:response];
+                    VTMFreeWiFiConfig(&wifiCfg);
+                    break;
+                }
+                case VTMBPCmdGetAlarmInfo: {
+                    // BP3 only
+                    VTMBP3AlarmInfo alarm = [VTMBLEParser bp3_parseAlarmInfo:response];
+                    VTMFreeBP3AlarmInfo(&alarm);
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // Body Scale (S1)
+        // 体脂秤
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        case VTMDeviceTypeScale: {
+            switch (cmdType) {
+                case VTMSCALECmdGetRunParams: {
+                    VTMScaleRunParams params = [VTMBLEParser parseScaleRunParams:response];
+                    break;
+                }
+                case VTMSCALECmdGetRealData: {
+                    VTMScaleRealData scaleData = [VTMBLEParser parseScaleRealData:response];
+                    // scaleData.run_para — run params / 运行参数
+                    // scaleData.scale_data — weight & resistance / 体重和阻抗
+                    // scaleData.waveform — ECG waveform / 心电波形
+                    VTMFreeScaleRealData(&scaleData);
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // Wearable Oximeter (O2Ring S)
+        // 腕式血氧仪
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        case VTMDeviceTypeWOxi: {
+            switch (cmdType) {
+                case VTMWOxiCmdGetConfig: {
+                    VTMWOxiInfo oxiInfo = [VTMBLEParser woxi_parseConfig:response];
+                    break;
+                }
+                case VTMWOxiCmdGetRealData: {
+                    VTMWOxiRealData oxiData = [VTMBLEParser woxi_parseRealData:response];
+                    // oxiData.run_para.spo2 — SpO2 / 血氧
+                    // oxiData.run_para.pr — pulse rate / 脉率
+                    // oxiData.run_para.pi — perfusion index / 灌注指数
+                    // oxiData.waveform — plethysmogram waveform / 脉搏波形
+                    VTMFreeWOxiRealData(&oxiData);
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // Finger Clip Oximeter (PF-10BWS)
+        // 指夹血氧仪
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        case VTMDeviceTypeFOxi: {
+            switch (cmdType) {
+                case VTMFOxiCmdGetConfig: {
+                    VTMFOxiConfig foxiCfg = [VTMBLEParser foxi_parseConfig:response];
+                    break;
+                }
+                case VTMFOxiCmdInfoResp: {
+                    VTMFOxiMeasureInfo info = [VTMBLEParser foxi_parseMeasureInfo:response];
+                    // info.spo2, info.pr, info.pi
+                    break;
+                }
+                case VTMFOxiCmdWaveResp: {
+                    [VTMBLEParser foxi_parseMeasureWave:response completion:^(int num, VTMFOxiMeasureWave *wave) {
+                        // num — number of wave points / 波形点数
+                        // wave — waveform data / 波形数据
+                    }];
+                    break;
+                }
+                case VTMFOxiCmdWorkMode: {
+                    VTMFOxiWorkStatus status = [VTMBLEParser foxi_parseWorkStatus:response];
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // Baby Monitor (BBSM P1)
+        // 婴儿监护
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        case VTMDeviceTypeBabyPatch: {
+            switch (cmdType) {
+                case VTMBabyCmdGetConfig: {
+                    VTMBabyConfig babyCfg = [VTMBLEParser baby_parseConfig:response];
+                    break;
+                }
+                case VTMBabyCmdGetRunParams: {
+                    VTMBabyRunParams params = [VTMBLEParser baby_parseRunParams:response];
+                    // params.rr — respiration rate / 呼吸率
+                    // params.cur_temperature — temperature / 当前温度
+                    // params.attitude_status — posture / 姿态
+                    break;
+                }
+                case VTMBabyCmdGetGesture: {
+                    VTMBabyAtt attitude = [VTMBLEParser baby_parseAttitude:response];
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // Ventilator (R200)
+        // 呼吸机
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        case VTMDeviceTypeVentilator: {
+            switch (cmdType) {
+                case VTMRVentilatorCmdGetLatest: {
+                    VTMRStatistict stat = [VTMBLEParser ventilator_parseStatistictData:response];
+                    break;
+                }
+                case VTMRVentilatorCmdGetStatisticsList: {
+                    VTMRStatistictsList list = [VTMBLEParser ventilator_parseStatisticsList:response];
+                    VTMFreeRStatistictsList(&list);
+                    break;
+                }
+                case VTMRVentilatorCmdScanWiFi: {
+                    NSArray *wifiList = [VTMBLEParser parseWiFiList:response];
+                    break;
+                }
+                case VTMRVentilatorCmdWiFiConfig: {
+                    VTMWiFiConfig wifiCfg = [VTMBLEParser parseWiFiConfig:response];
+                    VTMFreeWiFiConfig(&wifiCfg);
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+    }
+}
+
+// Command failed / 指令失败
+- (void)util:(VTMURATUtils *)util
+    commandFailed:(u_char)cmdType
+       deviceType:(VTMDeviceType)deviceType
+       failedType:(VTMBLEPkgType)type {
+    // Handle error / 处理错误
+}
+
+// Send error / 发送错误
+- (void)util:(VTMURATUtils *)util commandSendFailed:(u_char)errorCode {
+    // 0: peripheral nil  1: tx nil  2: disconnected  3: timeout
+}
+```
+
+---
+
+### VTMBLEParser — Data Parsing / 数据解析
+
+Parses raw `NSData` responses into structured C types.
+
+将原始 `NSData` 响应解析为结构化的 C 类型。
+
+#### Common Parsing / 通用解析
+
+```objc
+VTMDeviceInfo info = [VTMBLEParser parseDeviceInfo:response];
+VTMBatteryInfo battery = [VTMBLEParser parseBatteryInfo:response];
+VTMFileList fileList = [VTMBLEParser parseFileList:response];
+```
+
+#### ECG Parsing / 心电解析
+
+```objc
+// Real-time data / 实时数据
+VTMRealTimeData rtData = [VTMBLEParser parseRealTimeData:response];
+// Access: rtData.run_para.hr, rtData.waveform.wave_data
+// Remember to free / 记得释放内存
+VTMFreeRealTimeData(&rtData);
+
+// Real-time waveform only / 仅实时波形
+VTMRealTimeWF wf = [VTMBLEParser parseRealTimeWaveform:response];
+VTMFreeRealTimeWF(&wf);
+
+// Parse mV value / 解析 mV 值
+float mv = [VTMBLEParser mVFromShort:shortValue];
+
+// Config / 配置
+VTMER1Config er1Cfg = [VTMBLEParser parseER1Config:response];
+VTMER2Config er2Cfg = [VTMBLEParser parseER2Config:response];
+
+// ER3 real-time data / ER3 实时数据
+VTMER3RealTimeData er3Data = [VTMBLEParser parseER3RealTimeData:response];
+
+// ER3 waveform decompression / ER3 波形解压
+NSData *waveData = [VTMBLEParser parseER3WaveData:data withCable:cable];
+
+// ER3 12-lead parsing / ER3 十二导联解析
+NSArray *leads = [VTMBLEParser parseER3RealWaveData:data withCable:cable andState:state];
+
+// File parsing / 文件解析
+[VTMBLEParser parseWaveHeadAndTail:fileData result:^(VTMFileHead head, VTMER2FileTail tail) {
+    // ...
+}];
+
+// ER3 file parsing / ER3 文件解析
+[VTMBLEParser parseER3OriginFile:fileData
+    head:^(VTMER3FileHead head) { }
+    fragment:^(NSData *subData) { }
+    tail:^(VTMER3FileTail tail) { }];
+```
+
+#### Blood Pressure Parsing / 血压解析
+
+```objc
+VTMBPRealTimeData bpData = [VTMBLEParser parseBPRealTimeData:response];
+VTMFreeBPRealTimeData(&bpData);
+
+VTMBPRunStatus status = [VTMBLEParser parseBPRealTimeStatus:response];
+VTMBPConfig bpCfg = [VTMBLEParser parseBPConfig:response];
+VTMBPBPResult bpResult = [VTMBLEParser parseBPResult:response];
+VTMBPECGResult ecgResult = [VTMBLEParser parseECGResult:response];
+
+// BP measuring data / 血压测量中数据
+VTMBPMeasuringData measuring = [VTMBLEParser parseBPMeasuringData:response];
+VTMBPEndMeasureData endData = [VTMBLEParser parseBPEndMeasureData:response];
+
+// WiFi / WiFi 解析
+NSArray *wifiList = [VTMBLEParser parseWiFiList:response];
+VTMWiFiConfig wifiCfg = [VTMBLEParser parseWiFiConfig:response];
+VTMFreeWiFiConfig(&wifiCfg);
+```
+
+#### Scale Parsing / 体脂秤解析
+
+```objc
+VTMScaleRunParams runParams = [VTMBLEParser parseScaleRunParams:response];
+VTMScaleRealData scaleData = [VTMBLEParser parseScaleRealData:response];
+VTMFreeScaleRealData(&scaleData);
+
+[VTMBLEParser parseScaleFile:fileData completion:^(VTMScaleFileHead head, VTMScaleFileData data) {
+    // ...
+}];
+```
+
+#### Oximeter Parsing / 血氧仪解析
+
+```objc
+// Wearable (O2Ring S) / 腕式
+VTMWOxiInfo oxiInfo = [VTMBLEParser woxi_parseConfig:response];
+VTMWOxiRealData oxiData = [VTMBLEParser woxi_parseRealData:response];
+VTMFreeWOxiRealData(&oxiData);
+
+// Finger Clip (PF-10BWS) / 指夹式
+VTMFOxiConfig foxiCfg = [VTMBLEParser foxi_parseConfig:response];
+VTMFOxiMeasureInfo foxiInfo = [VTMBLEParser foxi_parseMeasureInfo:response];
+
+// File / 文件解析
+[VTMBLEParser oxi_parseFile:fileData completion:^(VTMOxiFileHead head, VTMOxiPoint *point, VTMOxiFileTail tail) {
+    // ...
+}];
+```
+
+#### Baby Monitor Parsing / 婴儿监护解析
+
+```objc
+VTMBabyConfig babyCfg = [VTMBLEParser baby_parseConfig:response];
+VTMBabyRunParams babyParams = [VTMBLEParser baby_parseRunParams:response];
+VTMBabyAtt attitude = [VTMBLEParser baby_parseAttitude:response];
+```
+
+#### Ventilator Parsing / 呼吸机解析
+
+```objc
+VTMRMonitorData monitor = [VTMBLEParser ventilator_parseMonitorData:response];
+VTMFreeRMonitorData(&monitor);
+
+VTMRStatistict stat = [VTMBLEParser ventilator_parseStatistictData:response];
+VTMRStatistictsList list = [VTMBLEParser ventilator_parseStatisticsList:response];
+VTMFreeRStatistictsList(&list);
+```
+
+---
+
+### VTO2Communicate — O2 Series Communication / O2 系列通信
+
+For O2Ring, BabyO2, Oxylink, KidsO2 and similar devices using the O2 protocol.
+
+用于 O2Ring、BabyO2、Oxylink、KidsO2 等使用 O2 协议的设备。
+
+> **About encrypted O2 devices / 关于加密版 O2 设备：**
+>
+> If you are integrating encrypted O2 series devices, use `VTMURATUtils` directly and implement the `VTMURATDeviceExtension` protocol to map the device's BLE name to `VTMDeviceTypeWOxi`. Then use the Wearable Oximeter commands (`woxi_*`) for communication.
+>
+> 如果对接的是加密版 O2 系列设备，请直接使用 `VTMURATUtils`，并实现 `VTMURATDeviceExtension` 协议将设备蓝牙名映射为 `VTMDeviceTypeWOxi` 类型，然后使用腕式血氧仪指令（`woxi_*`）进行通信。
+>
+> For users who have already integrated non-encrypted O2 series devices, the `VTO2Communicate` interface below remains fully available.
+>
+> 对于已对接过非加密 O2 系列设备的用户，以下 `VTO2Communicate` 接口依然可用。
+
+```objc
+// Get device info / 获取设备信息
+[o2Comm beginGetInfo];
+
+// Get real-time data / 获取实时数据
+[o2Comm beginGetRealData];
+
+// Get real-time waveform / 获取实时波形
+[o2Comm beginGetRealWave];
+
+// Get PPG data / 获取 PPG 数据
+[o2Comm beginGetRealPPG];
+
+// Set parameters / 设置参数
+[o2Comm beginToParamType:VTParamTypeOxiThr content:@"90"];
+
+// Set multiple parameters / 批量设置参数
+[o2Comm beginToParamsDictionary:@{@"1": @"90", @"5": @"50"}];
+
+// Download file / 下载文件
+[o2Comm beginReadFileWithFileName:@"20230101120000"];
+
+// Factory reset / 恢复出厂
+[o2Comm beginFactory];
+```
+
+#### VTO2CommunicateDelegate Callbacks / 回调
+
+```objc
+- (void)getInfoWithResultData:(NSData *)infoData {
+    VTO2Info *info = [VTO2Parser parseO2InfoWithData:infoData];
+}
+
+- (void)realDataCallBackWithData:(NSData *)realData {
+    VTRealObject *real = [VTO2Parser parseO2RealObjectWithData:realData];
+    // real.spo2, real.hr, real.battery, real.pi
+}
+
+- (void)realWaveCallBackWithData:(NSData *)realWave {
+    VTRealWave *wave = [VTO2Parser parseO2RealWaveWithData:realWave];
+    // wave.points — waveform array / 波形数组
+}
+
+- (void)readCompleteWithData:(VTFileToRead *)fileData {
+    VTO2Object *obj = [VTO2Parser parseO2ObjectWithData:fileData.fileData];
+    NSArray<VTO2WaveObject *> *waves = [VTO2Parser parseO2WaveObjectArrayWithWaveData:obj.waveData];
+}
+
+- (void)postCurrentReadProgress:(double)progress {
+    // Update download progress / 更新下载进度
+}
+```
+
+---
+
+### VTMFilter — ECG Signal Filter / 心电信号滤波
+
+```objc
+VTMFilter *filter = [VTMFilter shared];
+
+// Reset before new measurement / 新测量前重置
+[filter resetParams];
+
+// Real-time filtering (one point at a time) / 实时滤波（逐点）
+NSArray *filtered = [filter filterPointValue:mVValue];
+
+// Real-time filtering (batch) / 实时滤波（批量）
+NSArray *filtered = [filter sfilterPointValue:pointArray];
+
+// Offline filtering (history file) / 离线滤波（历史文件）
+NSArray *filtered = [filter offlineFilterPoints:pointArray];
+```
+
+---
+
+## Memory Management / 内存管理
+
+Some parsed structs contain dynamically allocated memory. You **must** call the corresponding free function after use.
+
+部分解析后的结构体包含动态分配的内存，使用完毕后**必须**调用对应的释放函数。
+
+```objc
+VTMRealTimeData data = [VTMBLEParser parseRealTimeData:response];
+// Use data... / 使用数据...
+VTMFreeRealTimeData(&data);
+
+// Available free functions / 可用的释放函数:
+VTMFreeRealTimeWF(&wf);
+VTMFreeRealTimeData(&data);
+VTMFreeScaleRealData(&scaleData);
+VTMFreeBPRealTimeWaveform(&wf);
+VTMFreeBPRealTimeData(&bpData);
+VTMFreeBP3AlarmInfo(&info);
+VTMFreeRMonitorData(&monitor);
+VTMFreeRStatistictsList(&list);
+VTMFreeWiFiInfo(&wifiInfo);
+VTMFreeServerInfo(&serverInfo);
+VTMFreeWiFiConfig(&config);
+VTMFreeWOxiRealData(&oxiData);
+```
+
+---
+
+## Key Data Structures / 关键数据结构
+
+### Device Info / 设备信息 — `VTMDeviceInfo`
+
+| Field | Description / 描述 |
+|---|---|
+| `hw_version` | Hardware version / 硬件版本 (e.g. 'A') |
+| `fw_version` | Firmware version / 固件版本 (e.g. 0x010100 = V1.1.0) |
+| `bl_version` | Bootloader version / 引导程序版本 |
+| `branch_code` | Branch code / 分支编码 |
+| `device_type` | Device type / 设备类型 |
+| `sn` | Serial number / 序列号 |
+
+### Battery Info / 电量信息 — `VTMBatteryInfo`
+
+| Field | Description / 描述 |
+|---|---|
+| `state` | 0: Normal / 正常, 1: Charging / 充电中, 2: Full / 充满, 3: Low / 低电量 |
+| `percent` | Battery percentage / 电量百分比 |
+| `voltage` | Voltage in mV / 电压 (mV) |
+
+### ECG Real-Time Data / 心电实时数据 — `VTMRealTimeData`
+
+| Field | Description / 描述 |
+|---|---|
+| `run_para.hr` | Heart rate (bpm) / 心率 |
+| `run_para.sys_flag` | Status flags / 状态标志 |
+| `run_para.record_time` | Recording duration (s) / 已记录时长 |
+| `waveform.sampling_num` | Number of samples / 采样点数 |
+| `waveform.wave_data` | Raw waveform data / 原始波形数据 |
+
+### BP Result / 血压结果 — `VTMBPBPResult`
+
+| Field | Description / 描述 |
+|---|---|
+| `systolic_pressure` | Systolic (mmHg) / 收缩压 |
+| `diastolic_pressure` | Diastolic (mmHg) / 舒张压 |
+| `mean_pressure` | Mean pressure (mmHg) / 平均压 |
+| `pulse_rate` | Pulse rate (bpm) / 脉率 |
+
+### O2 Real-Time Object / O2 实时对象 — `VTRealObject`
+
+| Property | Description / 描述 |
+|---|---|
+| `spo2` | Blood oxygen (%) / 血氧值 |
+| `hr` | Heart rate (bpm) / 心率 |
+| `pi` | Perfusion Index / 灌注指数 |
+| `battery` | Battery level / 电量 |
+| `leadState` | Lead status / 导联状态 |
+
+---
+
+## Error Handling / 错误处理
+
+### BLE Package Error Types / 蓝牙包错误类型 — `VTMBLEPkgType`
+
+| Value | Meaning / 含义 |
+|---|---|
+| `VTMBLEPkgTypeNotFound` (0xE0) | File not found / 文件不存在 |
+| `VTMBLEPkgTypeOpenFailed` (0xE1) | Open file failed / 打开文件失败 |
+| `VTMBLEPkgTypeReadFailed` (0xE2) | Read file failed / 读取文件失败 |
+| `VTMBLEPkgTypeWriteFailed` (0xE3) | Write file failed / 写入文件失败 |
+| `VTMBLEPkgTypeDeviceOccupied` (0xFB) | Device occupied / 设备被占用 |
+| `VTMBLEPkgTypeFormatError` (0xFC) | Format error / 格式错误 |
+| `VTMBLEPkgTypeFormatUnsupport` (0xFD) | Unsupported format / 不支持的格式 |
+| `VTMBLEPkgTypeCommonError` (0xFF) | Common error / 通用错误 |
+
+---
+
+## Typical Workflow / 典型工作流程
+
+```
+1. Scan peripheral        / 扫描设备
+2. Connect peripheral     / 连接设备
+3. Set peripheral to SDK  / 将外设传入 SDK
+4. Wait for deployment    / 等待服务就绪
+5. Send commands          / 发送指令
+6. Parse responses        / 解析响应
+7. Free memory if needed  / 释放内存（如需要）
+```
+
+---
+
+## Notes / 注意事项
+
+- The SDK automatically determines device type from the peripheral name and advertisement data.
+  SDK 会根据外设名称和广播数据自动判断设备类型。
+
+- Commands are device-type specific. Sending an ECG command to a BP device will be ignored.
+  指令按设备类型区分，向血压设备发送心电指令将被忽略。
+
+- File reading is a lock operation. You must call `endReadFile` before reading another file.
+  文件读取为锁定操作，读取下一个文件前必须调用 `endReadFile`。
+
+---
+
+## License / 许可
+
+Copyright © Viatom Technology. All rights reserved.
