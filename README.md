@@ -75,9 +75,9 @@ For ECG, BP, Scale, ER3, M-Series, Wearable Oximeter, Finger Clip Oximeter, Baby
 
 适用于心电、血压、体脂秤、ER3、M 系列、腕式血氧仪、指夹血氧仪、婴儿监护和呼吸机。
 
-> For 2nd-generation oximeter devices and some newer oximeter products, you can use `VTMURATUtils` by implementing `VTMURATDeviceExtension` to map the device's BLE name to `VTMDeviceTypeWOxi`, then use the Wearable Oximeter commands (`woxi_*`). If you are unsure whether your device is supported, please contact sales for confirmation.
+> For 2nd-generation oximeter devices and some newer oximeter products, you can use `VTMURATUtils`. Implement `VTMURATDeviceExtension` to extend support for custom BLE names and map them to `VTMDeviceTypeWOxi`, then use the Wearable Oximeter commands (`woxi_*`). If you are unsure whether your device is supported, please contact sales for confirmation.
 >
-> 二代血氧设备及部分新血氧产品可以使用 `VTMURATUtils`，实现 `VTMURATDeviceExtension` 协议将设备蓝牙名映射为 `VTMDeviceTypeWOxi`，然后使用腕式血氧仪指令（`woxi_*`）进行通信。如不确定设备是否支持，请联系销售咨询。
+> 二代血氧设备及部分新血氧产品可以使用 `VTMURATUtils`。通过实现 `VTMURATDeviceExtension` 协议可扩展支持定制化蓝牙名称并映射为 `VTMDeviceTypeWOxi`，然后使用腕式血氧仪指令（`woxi_*`）进行通信。如不确定设备是否支持，请联系销售咨询。
 
 ### Initialize / 初始化
 
@@ -93,9 +93,25 @@ urat.deviceDelegate = self;     // Service discovery callbacks / 服务发现回
 urat.wearablePPGKey = @"your-ppg-key";
 urat.controlKey = @"your-control-key";
 
-// For O2 devices using VTMURATUtils: implement VTMURATDeviceExtension to map BLE name to VTMDeviceTypeWOxi
-// 对于使用 VTMURATUtils 对接 O2 设备：实现 VTMURATDeviceExtension 协议将蓝牙名映射为 VTMDeviceTypeWOxi
+// Implement VTMURATDeviceExtension to support custom BLE names for a given device type
+// 实现 VTMURATDeviceExtension 协议可扩展支持定制化蓝牙名称
 urat.extension = self;
+
+// --- VTMURATDeviceExtension example / 示例 ---
+- (NSArray<NSString *> *)extensionNamePrefixsWithType:(VTMDeviceType)deviceType {
+    switch (deviceType) {
+        case VTMDeviceTypeECG:
+            return @[@"MyECG", @"CardioMonitor"];
+        case VTMDeviceTypeBP:
+            return @[@"MyBP", @"PressureGuard"];
+        case VTMDeviceTypeWOxi:
+            return @[@"MyO2Ring", @"OxiWatch"];
+        case VTMDeviceTypeBabyPatch:
+            return @[@"BabySensor"];
+        default:
+            return nil;
+    }
+}
 
 // Set connected peripheral with advertisement data / 设置已连接的外设（携带广播数据）
 // ⚠️ MUST use this method. Some devices cannot be identified correctly without advertisementData.
