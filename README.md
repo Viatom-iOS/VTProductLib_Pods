@@ -48,22 +48,42 @@ iOS 蓝牙通信 SDK，用于连接和操作乐普系列设备。
 
 ## Getting Started / 快速开始
 
+The SDK provides two communication modules. Choose based on your device type:
+
+SDK 提供两个通信模块，根据设备类型选择：
+
+| Module / 模块 | Applicable Devices / 适用设备 | Delegate |
+|---|---|---|
+| `VTMURATUtils` | ECG, BP, Scale, ER3, M-Series, Wearable Oximeter, Finger Clip Oximeter, Baby Monitor, Ventilator | `VTMURATUtilsDelegate` + `VTMURATDeviceDelegate` |
+| `VTO2Communicate` | O2Ring, BabyO2, Oxylink, KidsO2 (O2 series) | `VTO2CommunicateDelegate` |
+
+> ⚠️ Do NOT mix the two modules. Use one or the other for a given device.
+>
+> ⚠️ 两个模块不要混用，对于同一个设备只使用其中一个。
+
 ### 1. Scan & Connect / 扫描与连接
 
 Use CoreBluetooth `CBCentralManager` to scan and connect peripherals. SDK does not manage scanning — you handle it yourself.
 
 使用 CoreBluetooth 的 `CBCentralManager` 扫描并连接外设。SDK 不负责扫描，需要你自行管理。
 
-### 2. Initialize Communication / 初始化通信
+---
 
-**For most devices (ECG, BP, Scale, ER3, etc.):**
+## Module A: VTMURATUtils
 
-**大多数设备（心电、血压、体脂秤、ER3 等）：**
+For ECG, BP, Scale, ER3, M-Series, Wearable Oximeter, Finger Clip Oximeter, Baby Monitor, and Ventilator.
+
+适用于心电、血压、体脂秤、ER3、M 系列、腕式血氧仪、指夹血氧仪、婴儿监护和呼吸机。
+
+> For 2nd-generation oximeter devices and some newer oximeter products, you can use `VTMURATUtils` by implementing `VTMURATDeviceExtension` to map the device's BLE name to `VTMDeviceTypeWOxi`, then use the Wearable Oximeter commands (`woxi_*`). If you are unsure whether your device is supported, please contact sales for confirmation.
+>
+> 二代血氧设备及部分新血氧产品可以使用 `VTMURATUtils`，实现 `VTMURATDeviceExtension` 协议将设备蓝牙名映射为 `VTMDeviceTypeWOxi`，然后使用腕式血氧仪指令（`woxi_*`）进行通信。如不确定设备是否支持，请联系销售咨询。
+
+### Initialize / 初始化
 
 ```objc
 #import "VTMURATUtils.h"
 
-// Create communication instance / 创建通信实例
 VTMURATUtils *urat = [[VTMURATUtils alloc] init];
 urat.delegate = self;           // Communication callbacks / 通信回调
 urat.deviceDelegate = self;     // Service discovery callbacks / 服务发现回调
@@ -73,30 +93,17 @@ urat.deviceDelegate = self;     // Service discovery callbacks / 服务发现回
 urat.wearablePPGKey = @"your-ppg-key";
 urat.controlKey = @"your-control-key";
 
+// For O2 devices using VTMURATUtils: implement VTMURATDeviceExtension to map BLE name to VTMDeviceTypeWOxi
+// 对于使用 VTMURATUtils 对接 O2 设备：实现 VTMURATDeviceExtension 协议将蓝牙名映射为 VTMDeviceTypeWOxi
+urat.extension = self;
+
 // Set connected peripheral with advertisement data / 设置已连接的外设（携带广播数据）
-// ⚠️ MUST use this method. Some encrypted devices cannot be identified correctly without advertisementData.
-// ⚠️ 必须使用此方法。部分加密设备如果不传 advertisementData 将无法正确识别。
+// ⚠️ MUST use this method. Some devices cannot be identified correctly without advertisementData.
+// ⚠️ 必须使用此方法。部分设备如果不传 advertisementData 将无法正确识别。
 [urat setPeripheral:connectedPeripheral advertisementData:advData];
 ```
 
-**For O2 series devices (O2Ring, BabyO2, etc.):**
-
-**O2 系列设备（O2Ring、BabyO2 等）：**
-
-```objc
-#import "VTO2Communicate.h"
-
-VTO2Communicate *o2Comm = [[VTO2Communicate alloc] init];
-o2Comm.o2Delegate = self;
-// ⚠️ Same as above, must use setPeripheral:advertisementData: / 同上，必须使用此方法
-[o2Comm setPeripheral:connectedPeripheral advertisementData:advData];
-```
-
-### 3. Wait for Deployment / 等待服务就绪
-
-After setting the peripheral, the SDK discovers BLE services and characteristics automatically. Wait for the delegate callback before sending commands.
-
-设置外设后，SDK 会自动发现 BLE 服务和特征值。收到代理回调后才能发送指令。
+### Wait for Deployment / 等待服务就绪
 
 ```objc
 // VTMURATDeviceDelegate
@@ -111,15 +118,7 @@ After setting the peripheral, the SDK discovers BLE services and characteristics
 }
 ```
 
----
-
-## Core API / 核心接口
-
-### VTMURATUtils — BLE Communication / 蓝牙通信
-
-The primary class for sending commands and receiving responses from devices.
-
-主要通信类，用于向设备发送指令和接收响应。
+### Commands / 指令
 
 #### Common Commands / 通用指令
 
@@ -276,8 +275,6 @@ VTMWOxiRawSampleInfo info = {.marker = 0x01, .sample_rate = 0};
 [urat ventilator_requestWiFiConfiguration];
 [urat ventilator_syncConfigureWiFi:wifiConfig];
 ```
-
----
 
 ---
 
@@ -721,21 +718,42 @@ VTMFreeRStatistictsList(&list);
 
 ---
 
-### VTO2Communicate — O2 Series Communication / O2 系列通信
+---
 
-For O2Ring, BabyO2, Oxylink, KidsO2 and similar devices using the O2 protocol.
+## Module B: VTO2Communicate
 
-用于 O2Ring、BabyO2、Oxylink、KidsO2 等使用 O2 协议的设备。
+For O2 series devices: O2Ring, BabyO2, Oxylink, KidsO2, etc. Supports both encrypted and non-encrypted devices (internally implemented via `VTMURATUtils`).
 
-> **About encrypted O2 devices / 关于加密版 O2 设备：**
->
-> If you are integrating encrypted O2 series devices, use `VTMURATUtils` directly and implement the `VTMURATDeviceExtension` protocol to map the device's BLE name to `VTMDeviceTypeWOxi`. Then use the Wearable Oximeter commands (`woxi_*`) for communication.
->
-> 如果对接的是加密版 O2 系列设备，请直接使用 `VTMURATUtils`，并实现 `VTMURATDeviceExtension` 协议将设备蓝牙名映射为 `VTMDeviceTypeWOxi` 类型，然后使用腕式血氧仪指令（`woxi_*`）进行通信。
->
-> For users who have already integrated non-encrypted O2 series devices, the `VTO2Communicate` interface below remains fully available.
->
-> 对于已对接过非加密 O2 系列设备的用户，以下 `VTO2Communicate` 接口依然可用。
+适用于 O2 系列设备：O2Ring、BabyO2、Oxylink、KidsO2 等。同时支持加密和非加密设备（内部通过 `VTMURATUtils` 实现）。
+
+### Initialize / 初始化
+
+```objc
+#import "VTO2Communicate.h"
+
+VTO2Communicate *o2Comm = [[VTO2Communicate alloc] init];
+o2Comm.o2Delegate = self;
+
+// Set connected peripheral / 设置已连接的外设
+[o2Comm setPeripheral:connectedPeripheral advertisementData:advData];
+```
+
+### Wait for Deployment / 等待服务就绪
+
+```objc
+// VTO2CommunicateDelegate
+- (void)o2_serviceDeployed:(BOOL)completed {
+    if (completed) {
+        // Ready to communicate / 可以开始通信了
+        // For encrypted devices, call openupEncrypt first / 对于加密设备，需先完成加密握手
+        [o2Comm openupEncryptWithToken:@"your-token" secretKey:@"your-secret-key"];
+    } else {
+        // Service error / 服务错误
+    }
+}
+```
+
+### Commands / 指令
 
 ```objc
 // Get device info / 获取设备信息
@@ -763,7 +781,7 @@ For O2Ring, BabyO2, Oxylink, KidsO2 and similar devices using the O2 protocol.
 [o2Comm beginFactory];
 ```
 
-#### VTO2CommunicateDelegate Callbacks / 回调
+### VTO2CommunicateDelegate Callbacks / 响应回调
 
 ```objc
 - (void)getInfoWithResultData:(NSData *)infoData {
@@ -790,7 +808,54 @@ For O2Ring, BabyO2, Oxylink, KidsO2 and similar devices using the O2 protocol.
 }
 ```
 
+### Migration from VTO2Lib / 从 VTO2Lib 迁移
+
+If you are migrating from the legacy `VTO2Lib` (which used a singleton pattern), here is a quick guide:
+
+如果你从旧版 `VTO2Lib`（单例模式）迁移到当前库（实例模式），参考以下指引：
+
+**Before (VTO2Lib singleton) / 迁移前（VTO2Lib 单例）：**
+
+```objc
+// Old: shared singleton / 旧：使用单例
+VTO2Communicate *comm = [VTO2Communicate sharedInstance];
+comm.peripheral = peripheral;
+```
+
+**After (VTMProductLib instance) / 迁移后（VTMProductLib 实例）：**
+
+```objc
+// New: create instance per device / 新：为每个设备创建实例
+VTO2Communicate *comm = [[VTO2Communicate alloc] init];
+comm.o2Delegate = self;
+[comm setPeripheral:peripheral advertisementData:advData];
+```
+
+**Key differences / 主要区别：**
+
+| | VTO2Lib (old) | VTMProductLib (current) |
+|---|---|---|
+| Pattern / 模式 | Singleton (`sharedInstance`) | Instance (`alloc init`) |
+| Set peripheral / 设置外设 | `comm.peripheral = ...` | `[comm setPeripheral:... advertisementData:...]` |
+| Multi-device / 多设备支持 | Not supported / 不支持 | One instance per device / 每个设备一个实例 |
+
+**Migration steps / 迁移步骤：**
+
+1. Replace `[VTO2Communicate sharedInstance]` with `[[VTO2Communicate alloc] init]`.
+   将 `[VTO2Communicate sharedInstance]` 替换为 `[[VTO2Communicate alloc] init]`。
+
+2. Replace `comm.peripheral = peripheral` with `[comm setPeripheral:peripheral advertisementData:advData]`.
+   将 `comm.peripheral = peripheral` 替换为 `[comm setPeripheral:peripheral advertisementData:advData]`。
+
+3. Hold a strong reference to the instance (e.g. as a property). Since it's no longer a singleton, it will be deallocated if not retained.
+   持有实例的强引用（如作为属性）。由于不再是单例，不持有会被释放。
+
+4. API names and delegate methods remain unchanged. No other code changes needed.
+   API 名称和代理方法保持不变，无需其他代码修改。
+
 ---
+
+## Common Tools / 通用工具
 
 ### VTMFilter — ECG Signal Filter / 心电信号滤波
 
