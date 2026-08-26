@@ -126,6 +126,8 @@ urat.extension = self;
 - (void)utilDeployCompletion:(VTMURATUtils *)util {
     // Ready to communicate / 可以开始通信了
     // For encrypted devices, call openupEncrypt first / 对于加密设备，先执行加密握手
+    // If token or key is nil/empty, SDK uses built-in default credentials automatically
+    // 如果 token 或 key 为空，SDK 会自动使用内置默认凭证
     [util openupEncryptWithToken:@"your-token" secretKey:@"your-secret-key"];
 }
 
@@ -167,6 +169,9 @@ urat.extension = self;
 
 // Factory reset / 恢复出厂设置
 [urat factoryReset];
+
+// Clear all status and data / 清除所有状态和数据
+[urat allReset];
 ```
 
 #### ECG Device Commands / 心电设备指令
@@ -547,6 +552,13 @@ VTMWOxiRawSampleInfo info = {.marker = 0x01, .sample_rate = 0};
                     // params.rr — respiration rate / 呼吸率
                     // params.cur_temperature — temperature / 当前温度
                     // params.attitude_status — posture / 姿态
+                    // params.hasSleepInfo — whether sleep info is available / 是否包含睡眠信息
+                    if (params.hasSleepInfo) {
+                        // params.sleepInfo.Sleep_state — VTMBabySleepState (Deep/Light/Wake)
+                        // params.sleepInfo.falling_asleep — sleep start timestamp / 入睡时间戳
+                        // params.sleepInfo.awake_time — wake timestamp / 出睡时间戳
+                        // params.sleepInfo.cough_display_flag — cough flag / 咳嗽标志
+                    }
                     break;
                 }
                 case VTMBabyCmdGetGesture: {
@@ -719,6 +731,15 @@ VTMFOxiMeasureInfo foxiInfo = [VTMBLEParser foxi_parseMeasureInfo:response];
 VTMBabyConfig babyCfg = [VTMBLEParser baby_parseConfig:response];
 VTMBabyRunParams babyParams = [VTMBLEParser baby_parseRunParams:response];
 VTMBabyAtt attitude = [VTMBLEParser baby_parseAttitude:response];
+
+// Sleep info (auto-detected by parser) / 睡眠信息（解析器自动检测）
+if (babyParams.hasSleepInfo) {
+    VTMBabySleepInfo sleep = babyParams.sleepInfo;
+    // sleep.Sleep_state — VTMBabySleepState (Deep/Light/Wake/Unknown)
+    // sleep.falling_asleep — sleep start timestamp / 入睡时间戳
+    // sleep.awake_time — wake timestamp / 出睡时间戳
+    // sleep.cough_display_flag — cough detected / 咳嗽标志
+}
 ```
 
 #### Ventilator Parsing / 呼吸机解析
@@ -762,6 +783,8 @@ o2Comm.o2Delegate = self;
     if (completed) {
         // Ready to communicate / 可以开始通信了
         // For encrypted devices, call openupEncrypt first / 对于加密设备，需先完成加密握手
+        // If token or key is nil/empty, SDK uses built-in default credentials automatically
+        // 如果 token 或 key 为空，SDK 会自动使用内置默认凭证
         [o2Comm openupEncryptWithToken:@"your-token" secretKey:@"your-secret-key"];
     } else {
         // Service error / 服务错误
@@ -821,6 +844,12 @@ o2Comm.o2Delegate = self;
 
 - (void)postCurrentReadProgress:(double)progress {
     // Update download progress / 更新下载进度
+}
+
+- (void)openupEncryptResult:(VTCommonResult)result {
+    // Encryption handshake result / 加密握手结果
+    // VTCommonResultSuccess — success / 成功
+    // VTCommonResultFailed — failed / 失败
 }
 ```
 
