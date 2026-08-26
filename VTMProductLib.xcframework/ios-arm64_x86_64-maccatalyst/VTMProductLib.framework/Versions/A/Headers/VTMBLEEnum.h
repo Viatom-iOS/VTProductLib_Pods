@@ -312,6 +312,15 @@ typedef enum: u_char {
     VTMBabyGyrosStatusProne,     // 俯卧
     VTMBabyGyrosStatusSitUp,        // 坐起
 } VTMBabyGyrosStatus;
+
+/* 睡眠类型 */
+typedef enum: u_char {
+    VTMBabySleepStateDeep = 0,
+    VTMBabySleepStateLight ,
+    VTMBabySleepStateWake ,
+    VTMBabySleepStateUnknown = 0xFF,
+} VTMBabySleepState;
+
 /* 温度报警类型 */
 typedef enum: u_char {
     VTMBabyTempAlermNormal = 0,      // Normal temperature

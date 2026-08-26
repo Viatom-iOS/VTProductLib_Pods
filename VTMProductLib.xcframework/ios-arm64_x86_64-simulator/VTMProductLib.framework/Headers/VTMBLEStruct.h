@@ -1501,6 +1501,22 @@ typedef struct {
  } LampWorkTime
  */
 
+typedef struct
+{
+//40Byte
+    uint8_t     cough_display_flag; //1咳嗽
+    VTMBabySleepState     Sleep_state; //睡眠状态
+    uint32_t     falling_asleep;        //入睡时间
+    uint32_t     awake_time;         //出睡时间
+    uint32_t     wake_time;             //清醒时长
+    uint32_t     deep_time;            //深度睡眠时长
+    uint32_t    light_time;            //浅度睡眠时长
+    uint32_t     sleep_time;         //总睡眠时长
+    uint8_t     awake_cnt;            //清醒次数
+    uint8_t  playpnea;           //呼吸急促
+    unsigned char reserved[12];
+} CG_BOXABLE VTMBabySleepInfo;
+
 typedef struct {
     u_int record_time;                  // 已记录时长    单位:second    暂无使用
     u_char run_status;                  // 运行状态,见系统运行状态
@@ -1514,7 +1530,11 @@ typedef struct {
     u_int startup_time;                 // 开机时长, 单位：秒
     u_char gesture_alarm;               // 趴睡报警, 0x01
     u_char reserved[7];
+    BOOL hasSleepInfo;
+    VTMBabySleepInfo sleepInfo;
 } CG_BOXABLE VTMBabyRunParams;
+
+
 
 
 typedef struct {

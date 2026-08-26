@@ -149,6 +149,10 @@
 /// @brief factory reset
 - (void)factoryReset;
 
+/// @brief Clear all status and data, and turn off Bluetooth.
+- (void)allReset;
+
+
 ///  A few devices support this feature
 - (void)openupEncryptWithToken:(NSString * _Nonnull)token secretKey:(NSString * _Nonnull)key;
 
