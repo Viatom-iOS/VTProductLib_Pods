@@ -1,5 +1,47 @@
 # VTMProductSDK
 
+> ## ⚠️ This repository is archived / 本仓库已归档
+>
+> **VTMProductLib is now distributed from
+> [viatom-dev/VTProductLib](https://github.com/viatom-dev/VTProductLib)**,
+> which serves CocoaPods, Swift Package Manager, the demo project and the
+> documentation from a single place.
+>
+> **VTMProductLib 现已迁移至
+> [viatom-dev/VTProductLib](https://github.com/viatom-dev/VTProductLib)**，
+> 由该仓库统一提供 CocoaPods、Swift Package Manager、Demo 工程与文档。
+>
+> ### For new integrations / 新接入
+>
+> ```swift
+> // Swift Package Manager
+> .package(url: "https://github.com/viatom-dev/VTProductLib", from: "1.5.7")
+> ```
+>
+> ```ruby
+> # CocoaPods — unchanged, the pod name is the same
+> # CocoaPods —— 用法不变，pod 名称未变
+> pod 'VTMProductLib'
+> ```
+>
+> ### Why this repository is kept / 为什么保留本仓库
+>
+> Published CocoaPods specs are immutable. Versions **1.3.0 through 1.5.7**
+> resolve their sources from the tags in this repository, so it is kept public
+> and read-only to keep `pod install` working for projects pinned to those
+> versions. **Nothing new will be released here.**
+>
+> CocoaPods 上已发布的 podspec 不可修改。**1.3.0 至 1.5.7** 这些版本的源码
+> 均指向本仓库的对应 tag，因此本仓库保持公开且只读，以保证锁定这些版本的
+> 工程仍能正常 `pod install`。**本仓库不再发布新版本。**
+>
+> The documentation below is kept as it was at 1.5.7. For the current docs, see
+> the [new repository](https://github.com/viatom-dev/VTProductLib).
+>
+> 以下文档保持 1.5.7 时的状态。最新文档请见[新仓库](https://github.com/viatom-dev/VTProductLib)。
+
+---
+
 iOS BLE SDK for Lepu devices.
 
 iOS 蓝牙通信 SDK，用于连接和操作乐普系列设备。
